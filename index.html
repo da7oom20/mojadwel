@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<title>مُجَدوِل</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!--<script src="js/jquery-3.2.1.js"></script>-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<!-- Analytics!!!!!! -->
+
+	<style>
+		@import url(//cdn.rawgit.com/rtaibah/dubai-font-cdn/master/dubai-font.css);
+		body {
+			background-color: #F9F9F9;
+			font-family: "Dubai-Light";
+			font-size: 16px;
+			color: #305973;
+			text-align: center;
+		}
+		header {
+			font-family: "Dubai-Medium";
+			font-size: 55px;
+			/*color: #305973;*/
+			padding-top: 15px;
+		}
+		table {
+			width: 100%;
+		}
+		
+		#getSections, .add{
+			cursor: pointer;
+		}
+		
+		.add {
+			background-color: #0C65FF;
+			color: white;
+			border: 1.5px solid #dee2e6;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+		}
+		
+		.button {
+			color: white;
+			border-radius: 6px;
+			padding: 5px;
+		}
+		.blue {
+			background-color: #0C65FF;
+		}
+		.gray {
+			background-color: #274761;
+		}
+		
+		#timetable {
+			table-layout: fixed;
+			font-size: 15px;
+		}
+		
+		#timetable tbody th{
+			width: 10%; /** 10% + 90% = 100% **/
+			height: 80px;
+		}
+		
+		#timetable tbody td{
+			width: 18%; /* 5days x 18% = 90% */
+			height: 80px;
+			color: white;
+		}
+		
+		#timetable #break td{
+			height: 5px;
+		}
+		#timetable #break th{
+			height: 5px;
+		}
+		
+	</style>
+
+</head>
+
+<body>
+
+
+<!-- Main Container -->
+<div class="container">
+
+	<!-- Header -->
+	<header class="row">
+		<div class="col-md-12">
+			<h1>مُجَدوِل</h1>
+			<h6>رتّب جدولك بسهولة</h6>
+		</div>
+	</header>
+	
+	<hr>
+	
+	<!-- Options -->
+	<div class="row">
+		<div class="col-md-4">طالب/طالبة <select name="gender">
+			<option value="male">طالب</option>
+			<option value="female">طالبة</option>
+		</select>
+		</div>
+		<div class="col-md-4">رمز المقرر <select name="course-dep">
+			<optgroup label="">
+				<option value="cs">عال</option>
+				<option value="is">نال</option>
+				<option value="it">تال</option>
+				<option value="ms">دال</option>
+			</optgroup>
+			<optgroup label="">
+				<option value="math">ريض</option>
+				<option value="stat">احص</option>
+				<option value="phys">فيز</option>
+			</optgroup>
+			<optgroup label="">
+				<option value="acco">حسب</option>
+				<option value="econ">قصد</option>
+				<option value="mgmt">دار</option>
+			</optgroup>
+			<optgroup label="">
+				<option value="eng">نجل</option>
+			</optgroup>
+			<optgroup label="">
+				<option value="qur">قرا</option>
+				<option value="aqd">عقد</option>
+				<option value="fqh">فقه</option>
+				<option value="nho">نحو</option>
+				<option value="elm">علم</option>
+				<option value="trk">ترخ</option>
+				<option value="thqf">ثقف</option>
+			</optgroup>
+			</select>
+		</div>
+		<div class="col-md-4">رقم المقرر <select name="course-no">
+		</select></div>
+	</div>
+
+	<br>
+	
+	<!-- Get Sections Button -->
+	<div class="row">
+		<div class="col-md-12">
+			<button type="button" class="button blue" id="getSections">عرض الشعب المتاحة</button>
+			<hr>
+		</div>
+	</div>
+
+	<!-- Sections -->
+	<div class="row">
+		<div class="col-md-12">
+			<h4>الشُعب المتاحة</h4>
+			<table class="table-bordered" id="sections-table">
+				<thead>
+					<tr>
+						<th>رمز المقرر</th>
+						<th>رقم المقرر</th>
+						<th>اسم المقرر</th>
+						<th>الشعبة</th>
+						<th>الرقم المرجعي</th>
+						<th>الوقت</th>
+						<th>إضافة</th>
+					</tr>
+				</thead>
+	
+				<tbody>
+					<tr>
+						<td colspan="7" style="height: 90px"><h4>اختر المقرر ثم اضغط عرض الشعب المتاحة</h4></td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+			<div class="d-none progress">
+				<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>
+			<br>
+			<hr>
+		</div>
+	</div>
+
+
+	<!-- Table -->
+	<div class="row">
+		<div class="col-md-12">
+			<h4>الجدول</h4>
+			<table class="table-bordered" id="timetable">
+				<!-- Table Head -->
+				<thead>
+					<tr>
+						<th>الوقت/اليوم</th>
+						<th>الأحد</th>
+						<th>الأثنين</th>
+						<th>الثلاثاء</th>
+						<th>الأربعاء</th>
+						<th>الخميس</th>
+					</tr>
+				</thead>
+	
+				<!-- Table Body -->
+				<tbody>
+					<!-- First Row -->
+					<tr id="1">
+						<th>10:00 - 10:50</th>
+						
+			 			<td></td>
+			 			<td></td>
+						<td></td>
+			 			<td></td>
+						<td></td>
+					</tr>
+					<!-- Second Row -->
+					<tr id="2">
+						<th>11:00 - 11:50</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Break Row -->
+					<tr id="break">
+						<th>استراحة</th>
+						<td colspan="5"></td>
+					</tr>
+					<!-- Third Row -->
+					<tr id="3">
+						<th>12:30 - 01:20</th>
+		
+						<!--<td></td>-->
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Fourth Row -->
+					<tr id="4">
+						<th>01:30 - 02:20</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Fifth Row -->
+					<tr id="5">
+						<th>02:30 - 03:20</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Sixth Row -->
+					<tr id="6">
+						<th>03:50 - 04:40</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Seventh Row -->
+					<tr id="7">
+						<th>04:50 - 05:40</th>
+						
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Eighth Row -->
+					<tr id="8">
+						<th>06:00 - 06:50</th>
+						
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<br>
+
+	<!-- footer -->
+	<footer class="row">
+		<div class="col-md-12">
+			<!--<p>اقترح أو استفسر: <a href="http://twitter.com/zayedd_" target="_blank">@zayedd_</a> </p>-->
+		</div>
+	</footer>
+	
+	<script src="js/courses.js"></script>
+	<script src="js/app.js"></script>
+
+</div>
+
+</body>
+</html>
