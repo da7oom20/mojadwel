@@ -3,7 +3,7 @@
     "short_name": "\u0645\u062c\u062f\u0648\u0644",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
+            "src": "icons/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         }
