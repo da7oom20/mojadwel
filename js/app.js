@@ -310,6 +310,9 @@ $("#getSections").click(function () {
                         crn: sectionDeatils[1],
                         time:getMaleTimes(allDetails[i])
                     });
+                    if (sectionID % 2 === 0) {
+                        $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
+                    }
                     sectionID++;
                 }
             }
