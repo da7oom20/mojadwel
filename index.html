@@ -119,44 +119,57 @@
 	
 	<!-- Options -->
 	<div class="row">
-		<div class="col-md-4">طالب/طالبة <select name="gender">
-			<option value="male">طالب</option>
-			<option value="female">طالبة</option>
-		</select>
+		<div class="col-md-4">
+			<p>طالب/طالبة
+				<select name="gender">
+					<option value="null" disabled selected hidden>اختر</option>
+					<option value="male">طالب</option>
+					<option value="female">طالبة</option>
+				</select>
+			</p>
 		</div>
-		<div class="col-md-4">رمز المقرر <select name="course-dep">
-			<optgroup label="">
-				<option value="cs">عال</option>
-				<option value="is">نال</option>
-				<option value="it">تال</option>
-				<option value="ms">دال</option>
-			</optgroup>
-			<optgroup label="">
-				<option value="math">ريض</option>
-				<option value="stat">احص</option>
-				<option value="phys">فيز</option>
-			</optgroup>
-			<optgroup label="">
-				<option value="acco">حسب</option>
-				<option value="econ">قصد</option>
-				<option value="mgmt">دار</option>
-			</optgroup>
-			<optgroup label="">
-				<option value="eng">نجل</option>
-			</optgroup>
-			<optgroup label="">
-				<option value="qur">قرا</option>
-				<option value="aqd">عقد</option>
-				<option value="fqh">فقه</option>
-				<option value="nho">نحو</option>
-				<option value="elm">علم</option>
-				<option value="trk">ترخ</option>
-				<option value="thqf">ثقف</option>
-			</optgroup>
-			</select>
+		<div class="col-md-4">
+			<p>رمز المقرر
+				<select name="course-dep" disabled>
+					<option value="null" disabled selected hidden>اختر</option>
+					<optgroup label="كلية الحاسب">
+						<option value="cs">عال (علوم حاسب)</option>
+						<option value="is">نال (نظم معلومات)</option>
+						<option value="it">تال (تقنية معلومات)</option>
+						<option value="ms">دال (إدارة معلومات)</option>
+					</optgroup>
+					<optgroup label="كلية العلوم">
+						<option value="math">ريض (رياضيات)</option>
+						<option value="stat">احص (إحصاء)</option>
+						<option value="phys">فيز (فيزياء)</option>
+					</optgroup>
+					<optgroup label="كلية الإدراة">
+						<option value="acco">حسب (محاسبة)</option>
+						<option value="econ">قصد (اقتصاد)</option>
+						<option value="mgmt">دار (إدارة أعمال)</option>
+					</optgroup>
+					<optgroup label="كلية اللغات">
+						<option value="eng">نجل (إنجليزي)</option>
+					</optgroup>
+					<optgroup label="مواد عامة">
+						<option value="qur">قرا (قرآن)</option>
+						<option value="aqd">عقد (توحيد)</option>
+						<option value="fqh">فقه</option>
+						<option value="nho">نحو</option>
+						<option value="elm">علم (مهارات اتصال)</option>
+						<option value="trk">ترخ (سيرة نبوية)</option>
+						<option value="thqf">ثقف (ثقافة إسلامية)</option>
+					</optgroup>
+				</select>
+			</p>
 		</div>
-		<div class="col-md-4">رقم المقرر <select name="course-no">
-		</select></div>
+		<div class="col-md-4">
+			<p>رقم المقرر
+				<select name="course-no" disabled>
+					<option value="null" disabled selected hidden>اختر</option>
+				</select>
+			</p>
+		</div>
 	</div>
 
 	<br>

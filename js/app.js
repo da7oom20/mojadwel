@@ -1,6 +1,8 @@
 /**==== Global Variables ====**/
 // Used with every section in Table array to manage add and remove
 var id = 1;
+// Used To Know Gender
+var isMale;
 
 /**==== Functions ====**/
 function showCourseNumbers(arry) {
@@ -201,21 +203,27 @@ var colors = [
 /**==== Event listeners ====**/
 //Change Timetable Times[Male - Female]
 $("select[name='gender']").change(function () {
-    console.log('Change Timetable Times');
+    // Assign Gender
+    isMale = $("select[name='gender'] option:selected").attr("value") === "male"? true : false;
+    // Disable gender choice
+    $(this).attr("disabled", "disabled");
+    // Enable course department choice
+    $("select[name='course-dep']").removeAttr("disabled");
+    // Enable course number choice
+    $("select[name='course-no']").removeAttr("disabled");
+
+    // Change Timetable Times
     if ($("select[name='gender'] option:selected").attr("value") === "female") {
         $("tr#1 th").html("07:30 - 08:20");
         $("tr#2 th").html("08:30 - 09:20");
         $("tr#3 th").html("10:00 - 10:50");
         $("tr#4 th").html("11:00 - 11:50");
+        // Add Launch Break
+        $("<tr id=\"break\"><th>استراحة</th><td colspan=\"5\"></td></tr>").insertAfter("tr#4");
         $("tr#5 th").html("12:30 - 01:20");
         $("tr#6 th").html("01:30 - 02:20");
-    } else {
-        $("tr#1 th").html("10:00 - 10:50");
-        $("tr#2 th").html("11:00 - 11:50");
-        $("tr#3 th").html("12:30 - 01:20");
-        $("tr#4 th").html("01:30 - 02:20");
-        $("tr#5 th").html("02:30 - 03:20");
-        $("tr#6 th").html("03:30 - 04:20");
+        $("tr#7 th").html("02:30 - 03:20");
+        $("tr#8 th").html("03:30 - 04:20");
     }
 });
 
@@ -249,6 +257,15 @@ $("select[name='course-dep']").change(function () {
 
 // Get sections button = Will get the page and send it to sections object to process it
 $("#getSections").click(function () {
+    // If didn't choose gender and dep and course warn the user
+    if (isMale === undefined) {
+        swal("يجب عليك اختيار (طالب/طالبة) و (رمز المقرر) و (رقم المقرر) قبل عرض الشعب المتاحة", {
+            button: "حسناً",
+            icon: "info"
+        });
+        return;
+    }
+
     var getSectionsButton = $("#getSections");
     var progressBar = $(".progress");
     var section = $("select[name='course-dep'] option:selected").text() + ' - ' + $("select[name='course-no'] option:selected").text();
@@ -267,11 +284,10 @@ $("#getSections").click(function () {
     progressBar.toggleClass("d-none");
 
     $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://iussb.imamu.edu.sa/PROD_ar/bwckctlg.p_disp_listcrse?term_in=143920&subj_in='
-        + $("select[name='course-dep'] option:selected").text() + '&crse_in='
+        + $("select[name='course-dep'] option:selected").text().substring(0,3) + '&crse_in='
         + $("select[name='course-no'] option:selected").text().substring(0,3)
         + '&schd_in=01') + '&callback=?', function(data){
 
-        var isMale = $("select[name='gender'] option:selected").attr("value") === "male"? true : false;
         //this is the whole page
         var page = $($.parseHTML(data.contents.substring(3463, data.contents.length - 1764)));
         //allTitles will be an array of "th" objects which is like تراكيب محددة - 20332 - عال 104 - 173
@@ -462,9 +478,4 @@ $("#timetable").on("click", ".close", function () {
             break;
         }
     }
-});
-
-/**==== When Document is ready ====**/
-$(function () {
-    showCourseNumbers(csCourses);
 });
