@@ -275,7 +275,7 @@ $("#getSections").click(function () {
     if (sections.array.length > 0) {
         sections.emptyArray();
     }
-    //Remove get sections button - for not to recive more than one request at a time.
+    //Remove get sections button - for not to receive more than one request at a time.
     getSectionsButton.attr('disabled', 'true');
     getSectionsButton.toggleClass('blue');
     getSectionsButton.toggleClass('gray');
