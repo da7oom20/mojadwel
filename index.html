@@ -79,22 +79,17 @@
 			font-size: 15px;
 		}
 		
-		#timetable tbody th{
-			width: 10%; /** 10% + 90% = 100% **/
-			height: 80px;
-		}
-		
-		#timetable tbody td{
-			width: 18%; /* 5days x 18% = 90% */
-			height: 80px;
+		#timetable tbody tr{
+			height: 70px;
 			color: white;
 		}
 		
-		#timetable #break td{
-			height: 5px;
+		#timetable tbody th{
+			color: #305973;
 		}
-		#timetable #break th{
-			height: 5px;
+		
+		#timetable tbody tr:first-child {
+			height: 35px;
 		}
 		
 	</style>
@@ -234,9 +229,39 @@
 	
 				<!-- Table Body -->
 				<tbody>
-					<!-- First Row -->
+					<!-- First Row - 7:30 -->
 					<tr id="1">
-						<th>10:00 - 10:50</th>
+						<th>07:30</th>
+						
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Second Row - 8:00 -->
+					<tr id="2">
+						<th>08:00</th>
+						
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Third Row - 9:00 -->
+					<tr id="3">
+						<th>09:00</th>
+						
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Fourth Row - 10:00 -->
+					<tr id="4">
+						<th>10:00</th>
 						
 			 			<td></td>
 			 			<td></td>
@@ -244,9 +269,9 @@
 			 			<td></td>
 						<td></td>
 					</tr>
-					<!-- Second Row -->
-					<tr id="2">
-						<th>11:00 - 11:50</th>
+					<!-- Fifth Row - 11:00 -->
+					<tr id="5">
+						<th>11:00</th>
 		
 						<td></td>
 						<td></td>
@@ -254,14 +279,9 @@
 						<td></td>
 						<td></td>
 					</tr>
-					<!-- Break Row -->
-					<tr id="break">
-						<th>استراحة</th>
-						<td colspan="5"></td>
-					</tr>
-					<!-- Third Row -->
-					<tr id="3">
-						<th>12:30 - 01:20</th>
+					<!-- Sixth Row - 12:00 -->
+					<tr id="6">
+						<th>12:00</th>
 		
 						<!--<td></td>-->
 						<td></td>
@@ -270,39 +290,39 @@
 						<td></td>
 						<td></td>
 					</tr>
-					<!-- Fourth Row -->
-					<tr id="4">
-						<th>01:30 - 02:20</th>
-		
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<!-- Fifth Row -->
-					<tr id="5">
-						<th>02:30 - 03:20</th>
-		
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<!-- Sixth Row -->
-					<tr id="6">
-						<th>03:50 - 04:40</th>
-		
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<!-- Seventh Row -->
+					<!-- Seventh Row - 1:00 -->
 					<tr id="7">
-						<th>04:50 - 05:40</th>
+						<th>01:00</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Eighth Row - 2:00 -->
+					<tr id="8">
+						<th>02:00</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Ninth Row - 3:00 -->
+					<tr id="9">
+						<th>03:00</th>
+		
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Tenth Row - 4:00 -->
+					<tr id="10">
+						<th>04:00</th>
 						
 						<td></td>
 						<td></td>
@@ -310,9 +330,19 @@
 						<td></td>
 						<td></td>
 					</tr>
-					<!-- Eighth Row -->
-					<tr id="8">
-						<th>06:00 - 06:50</th>
+					<!-- Eleventh Row - 5:00 -->
+					<tr id="11">
+						<th>05:00</th>
+						
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- Twelfth Row - 6:00 -->
+					<tr id="12">
+						<th>06:00</th>
 						
 						<td></td>
 						<td></td>
