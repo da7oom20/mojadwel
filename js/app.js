@@ -201,7 +201,7 @@ var colors = [
 ];
 
 /**==== Event listeners ====**/
-//Change Timetable Times[Male - Female]
+// Get gender and disable changing gender
 $("select[name='gender']").change(function () {
     // Assign Gender
     isMale = $("select[name='gender'] option:selected").attr("value") === "male"? true : false;
@@ -211,20 +211,6 @@ $("select[name='gender']").change(function () {
     $("select[name='course-dep']").removeAttr("disabled");
     // Enable course number choice
     $("select[name='course-no']").removeAttr("disabled");
-
-    // Change Timetable Times
-    if ($("select[name='gender'] option:selected").attr("value") === "female") {
-        $("tr#1 th").html("07:30 - 08:20");
-        $("tr#2 th").html("08:30 - 09:20");
-        $("tr#3 th").html("10:00 - 10:50");
-        $("tr#4 th").html("11:00 - 11:50");
-        // Add Launch Break
-        $("<tr id=\"break\"><th>استراحة</th><td colspan=\"5\"></td></tr>").insertAfter("tr#4");
-        $("tr#5 th").html("12:30 - 01:20");
-        $("tr#6 th").html("01:30 - 02:20");
-        $("tr#7 th").html("02:30 - 03:20");
-        $("tr#8 th").html("03:30 - 04:20");
-    }
 });
 
 // Change course numbers when department is changed
