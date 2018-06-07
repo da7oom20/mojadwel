@@ -11,7 +11,7 @@ function showCourseNumbers(arry) {
         $("select[name='course-no']").append("<option value='courseNumber'>" + element.number + " - " + element.name +"</option>");
     });
 }
-function getTime(tbody) {
+function getTextTime(tbody) {
     var textTime = "";
     var allTRs = $(tbody).find('tr');
     var allTDs;
@@ -22,10 +22,15 @@ function getTime(tbody) {
             continue;
         }
         time = $(allTDs[1]).text();
-        if (time.charAt(1) === ':') {
-             time = time.substring(10,14) + ' - ' + time.substring(0,4);
-        } else {
-             time = time.substring(11,16) + ' - ' + time.substring(0,5);
+
+        if (time.indexOf(":") === 2 && time.lastIndexOf(":") === 13) {
+            time = time.substring(11,16) + ' - ' + time.substring(0,5);
+        } else if (time.indexOf(":") === 2 && time.lastIndexOf(":") === 12) {
+            time = time.substring(10,15) + ' - ' + time.substring(0,5);
+        } else if (time.indexOf(":") === 1 && time.lastIndexOf(":") === 11) {
+            time = time.substring(10,14) + ' - ' + time.substring(0,4);
+        } else if (time.indexOf(":") === 1 && time.lastIndexOf(":") === 12) {
+            time = time.substring(10,15) + ' - ' + time.substring(0,4);
         }
         days = $(allTDs[2]).text();
         textTime += time + " : " + days + "<br/>";
@@ -53,8 +58,9 @@ function getNumberOfLecture(timeOfLecture) {
         case "6:": return 8; break;
     }
 }
-function getMaleTimes(tbody) {
+function getTimesArray(tbody) {
     var times = [];
+    var timeSlots = [];
     var allTRs = $(tbody).find('tr');
     var allTDs;
     for(var i = 1; i < allTRs.length; i++){
@@ -64,19 +70,28 @@ function getMaleTimes(tbody) {
         }
         var days = $(allTDs[2]).text();
         var fromTo = $(allTDs[1]).text();
-        if (days.length > 1){
-            for (var j = 0; j < days.length; j++) {
-                times.push({
-                    day: getNumberOfDay(days.charAt(j)),
-                    time: getNumberOfLecture(fromTo.substring(0, 2))
-                });
+        var startHour = fromTo.charAt(1) === ":" ? Number(fromTo.substring(0, 1)) : Number(fromTo.substring(0, 2));
+        var startMinute = fromTo.charAt(1) === ":" ? Number(fromTo.substring(2, 4)) : Number(fromTo.substring(3, 5));
+        var lastIndexOfColon = fromTo.lastIndexOf(":");
+        var endHour = Number(fromTo.substring(lastIndexOfColon - 2, lastIndexOfColon));
+        var endMinute = Number(fromTo.substring(lastIndexOfColon + 1, lastIndexOfColon + 3));
+        while ( !(startHour === endHour && startMinute === endMinute) ) {
+            timeSlots.push((String(startHour).length === 1? "0" + String(startHour) : String(startHour)) + (String(startMinute).length === 1? "0" + String(startMinute) : String(startMinute)));
+            startMinute += 5;
+            if (startMinute === 60) {
+                startMinute = 0;
+                startHour++;
             }
-        } else {
+            if (startHour === 13)
+                startHour = 1;
+        }
+        for (var j = 0; j < days.length; j++) {
             times.push({
-                day: getNumberOfDay(days),
-                time: getNumberOfLecture(fromTo.substring(0, 2))
+                day: getNumberOfDay(days.charAt(j)),
+                times: timeSlots.slice(0)
             });
         }
+        timeSlots.length = 0;
     }
     return times;
 }
@@ -116,6 +131,16 @@ function getIndexOfDeletedSection(id) {
             return i;
     }
     return -1;
+}
+function minutesPlus5(time) {
+    time = Number(time);
+    time += 5;
+    time = String(time);
+    if (time.length === 1) {
+        return "0" + time;
+    } else {
+        return time;
+    }
 }
 $.cssHooks.backgroundColor = {
     get: function(elem) {
@@ -244,7 +269,7 @@ $("select[name='course-dep']").change(function () {
 // Get sections button = Will get the page and send it to sections object to process it
 $("#getSections").click(function () {
     // If didn't choose gender and dep and course warn the user
-    if (isMale === undefined) {
+    if (isMale === undefined || $("select[name='course-dep']").val() === null || $("select[name='course-no']").val() === null) {
         swal("يجب عليك اختيار (طالب/طالبة) و (رمز المقرر) و (رقم المقرر) قبل عرض الشعب المتاحة", {
             button: "حسناً",
             icon: "info"
@@ -253,7 +278,7 @@ $("#getSections").click(function () {
     }
 
     var getSectionsButton = $("#getSections");
-    var progressBar = $(".progress");
+    var loader = $(".loader");
     var section = $("select[name='course-dep'] option:selected").text() + ' - ' + $("select[name='course-no'] option:selected").text();
     //Empty sections table
     $("#sections-table tbody tr").remove();
@@ -266,8 +291,9 @@ $("#getSections").click(function () {
     getSectionsButton.toggleClass('blue');
     getSectionsButton.toggleClass('gray');
     getSectionsButton.css('cursor', 'not-allowed');
-    //Show progress bar
-    progressBar.toggleClass("d-none");
+    //Show loader
+    loader.toggleClass("d-none");
+
 
     $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://iussb.imamu.edu.sa/PROD_ar/bwckctlg.p_disp_listcrse?term_in=143920&subj_in='
         + $("select[name='course-dep'] option:selected").text().substring(0,3) + '&crse_in='
@@ -297,7 +323,7 @@ $("#getSections").click(function () {
                         "<td>" + sectionDeatils[0] + "</td>" +
                         "<td>" + sectionDeatils[3] + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
-                        "<td dir='ltr'>" + getTime(allDetails[i]) + "</td>" +
+                        "<td dir='ltr'>" + getTextTime(allDetails[i]) + "</td>" +
                         "<td>" +
                         "<button type=\"button\" class=\"add\">+</button>" +
                         "</td>"
@@ -310,7 +336,7 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getMaleTimes(allDetails[i])
+                        time:getTimesArray(allDetails[i])
                     });
                     if (sectionID % 2 === 0) {
                         $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
@@ -325,15 +351,15 @@ $("#getSections").click(function () {
                 if (Math.floor(sectionDeatils[3]/10) === 37 || sectionDeatils[3] === 071) {
                     foundSections = true;
                     $("table#sections-table tbody").append(
-                        "<tr>" +
+                        "<tr id=\"" + sectionID + "\">" +
                         "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
                         "<td>" + sectionDeatils[2].substring(4, 7) + "</td>" +
                         "<td>" + sectionDeatils[0] + "</td>" +
                         "<td>" + sectionDeatils[3] + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
-                        "<td>" + getTime(allDetails[i]) + "</td>" +
+                        "<td dir='ltr'>" + getTextTime(allDetails[i]) + "</td>" +
                         "<td>" +
-                        "<i class=\"fa fa-plus-circle fa-lg\" id='add'></i>" +
+                        "<button type=\"button\" class=\"add\">+</button>" +
                         "</td>"
                         +"</tr>"
                     );
@@ -344,8 +370,11 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:[]
+                        time:getTimesArray(allDetails[i])
                     });
+                    if (sectionID % 2 === 0) {
+                        $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
+                    }
                     sectionID++;
                 }
             }
@@ -355,8 +384,8 @@ $("#getSections").click(function () {
             swal("لا يوجد شعب متاحة لمادة:", section, "error", {button: "حسناً"});
         }
 
-        //Hide progress bar
-        progressBar.toggleClass("d-none");
+        //Hide loader
+        loader.toggleClass("d-none");
         //Show get sections button
         getSectionsButton.removeAttr('disabled');
         getSectionsButton.toggleClass('gray');
@@ -366,8 +395,8 @@ $("#getSections").click(function () {
 
     }).fail(function(){
         swal("تعذّر جلب الشعب", "تأكد من اتصالك بالانترنت", "error", {button: "حسناً"});
-        //Hide progress bar
-        progressBar.toggleClass("d-none");
+        //Hide loader
+        loader.toggleClass("d-none");
         //Show get sections button
         getSectionsButton.removeAttr('disabled');
         getSectionsButton.toggleClass('gray');
@@ -384,14 +413,14 @@ $("#sections-table").on("click", ".add", function () {
     var crn = sections.array[rowID].crn;
 
     // If section is already added to table
-    var alreadyAddedToTable = false;
+    var isAlreadyAddedToTable = false;
     table.array.forEach(function (t) {
         if (t.crn === crn) {
-            alreadyAddedToTable = true;
+            isAlreadyAddedToTable = true;
         }
     });
 
-    if (alreadyAddedToTable) {
+    if (isAlreadyAddedToTable) {
         swal("الشعبة موجودة في الجدول حالياً", {
             button: "حسناً",
             icon: "info"
@@ -403,9 +432,18 @@ $("#sections-table").on("click", ".add", function () {
         table.array.forEach(function (t) {
             t.time.forEach(function (t2) {
                 sections.array[rowID].time.forEach(function (t3) {
-                    if (t3.day === t2.day && t3.time === t2.time) {
-                        conflictMessage += t.dep + " " + t.number + " - " + t.section + " : يوم " + getDayOfLecture(t2.day) + " " + getTimeOfLecture(t2.time) + "\n";
-                        conflictExists = true;
+                    if (t3.day === t2.day) {
+                        // loop through times array to detect confliction.
+                        loop1:
+                        for (var i = 0; i < t2.times.length; i++) {
+                            for (var j = 0; j < t3.times.length; j++) {
+                                if (t2.times[i] === t3.times[j]) {
+                                    conflictMessage += t.dep + " " + t.number + " - " + t.section + " : يوم " + getDayOfLecture(t2.day) + " " + t2.times[i].substring(0, 2) + ':' + t2.times[i].substring(2, 4) + "\n";
+                                    conflictExists = true;
+                                    break loop1;
+                                }
+                            }
+                        }
                     }
                 });
             });
@@ -422,17 +460,32 @@ $("#sections-table").on("click", ".add", function () {
             table.array[table.array.length - 1].id = id++;
 
             var lastElementInTableArray = table.array[table.array.length - 1];
-            lastElementInTableArray.time.forEach(function (t) {
-                var selectedCell = $('#timetable tbody tr#' + t.time + ' td:nth-of-type(' + t.day + ')');
-                selectedCell.html(lastElementInTableArray.dep + ' ' + lastElementInTableArray.number + '<br/>' +
-                                  lastElementInTableArray.name + '<br/>' +
-                                  lastElementInTableArray.section + ' - ' + lastElementInTableArray.crn +
-                                  '<button type=\"button\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>'
-                                  );
-                selectedCell.css('background-color', "");
-                selectedCell.attr('style', 'background-color: ' + lastElementInTableArray.color);
-                selectedCell.addClass("cell-" + lastElementInTableArray.id);
-            });
+            var selectedCell;
+            for (var i = 0; i < lastElementInTableArray.time.length; i++) {
+                for (var j = 0; j < lastElementInTableArray.time[i].times.length; j++) {
+                    selectedCell = $('#timetable tbody tr#row' + lastElementInTableArray.time[i].times[j] + ' td.day' + lastElementInTableArray.time[i].day);
+                    if (j !== 0) {
+                        selectedCell.remove();
+                    } else {
+                        selectedCell.html(
+                            '<span class="float-right">' + lastElementInTableArray.dep + ' ' + lastElementInTableArray.number + ' - ' + lastElementInTableArray.section + '</span>' +
+                            '<span class="float-left">' + lastElementInTableArray.time[i].times[0].substring(0, 2) + ':' + lastElementInTableArray.time[i].times[0].substring(2, 4) + '</span><br>' +
+                            '<span>' + (lastElementInTableArray.name.length > 15 ? lastElementInTableArray.name.substring(0, 15) + "..." : lastElementInTableArray.name) + '</span><br>' +
+                            '<span class="float-right">' + '3193' + '</span>' +
+                            '<span class="float-left">' + lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2) + ':' + minutesPlus5(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
+                        );
+                        selectedCell.css('background-color', "");
+                        selectedCell.attr('style', 'background-color: ' + lastElementInTableArray.color);
+                        selectedCell.attr('rowspan', lastElementInTableArray.time[i].times.length);
+                        selectedCell.addClass("cell-" + lastElementInTableArray.id + "-table");
+                        selectedCell.addClass("filled-cell");
+                    }
+                }
+            }
+
+            $("#added-sections-table tr:nth-child(1)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.dep + " " + lastElementInTableArray.number + "-" + lastElementInTableArray.section + '</td>');
+            $("#added-sections-table tr:nth-child(2)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
+            $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
 
             swal("تم إضافة الشعبة إلى الجدول بنجاح!", {
                 buttons: false,
@@ -444,16 +497,53 @@ $("#sections-table").on("click", ".add", function () {
 });
 
 // Remove section from table
-$("#timetable").on("click", ".close", function () {
-    var id = Number($(this).parent().attr("class").substr(-1, 1));
-    var color = $(this).parent().css("background-color");
+$("#added-sections-table").on("click", ".remove-button", function () {
+    var id = Number($(this).parent().attr("class").substring(5));
+    var cells = $(".cell-" + id + "-table");
+    var details = $(".cell-" + id);
+    var color = cells.first().css("background-color");
     var index = getIndexOfDeletedSection(id);
     // Remove cells from timetable
-    var cells = $(".cell-" + id);
     cells.each(function () {
         $(this).empty();
         $(this).removeAttr("style");
-        $(this).removeAttr("class");
+        $(this).toggleClass("filled-cell");
+        $(this).toggleClass("cell-" + id + "-table");
+        $(this).removeAttr("rowspan");
+    });
+    // Add deleted cells
+    table.array[index].time.forEach(function (t) {
+        for (var i = 1; i < t.times.length; i++) {
+            if (t.day === 1) {
+                if (t.times[i].substring(2, 4) === "00"){
+                    $('<td class="day' + t.day + '"></td>').insertAfter( $("#row" + t.times[i] + " th"));
+                } else {
+                    $("#row" + t.times[i]).prepend('<td class="day' + t.day + '"></td>');
+                }
+
+            } else {
+                var days = $("#row" + t.times[i] + " td");
+                // console.log(days, "#row" + t.times[i] + " td");
+                var foundBigger = false;
+                for (var j = 0; j < days.length; j++) {
+                   if (Number($(days[j]).attr("class").substring(3)) > t.day) {
+                       $('<td class="day' + t.day + '"></td>').insertBefore( $(days[j]));
+                       foundBigger = true;
+                       break;
+                   }
+                }
+                // When tr is empty or there is no bigger number
+                if (!foundBigger) {
+                    $("#row" + t.times[i]).append('<td class="day' + t.day + '"></td>');
+                }
+                // days = $("#row" + t.times[i] + " td");
+                // console.log(days, "#row" + t.times[i] + " td");
+            }
+        }
+    });
+    // Remove details from added sections table
+    details.each(function () {
+        $(this).remove();
     });
     // Delete section from table array
     table.array.splice(index, 1);
@@ -464,4 +554,10 @@ $("#timetable").on("click", ".close", function () {
             break;
         }
     }
+
+    swal("تم إزالة الشعبة بنجاح!", {
+        buttons: false,
+        timer: 700,
+        icon: "success"
+    });
 });
