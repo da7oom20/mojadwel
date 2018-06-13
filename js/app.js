@@ -46,18 +46,6 @@ function getNumberOfDay(charachterOfDay) {
         case 'R': return 5; break;
     }
 }
-function getNumberOfLecture(timeOfLecture) {
-    switch (timeOfLecture) {
-        case "10": return 1; break;
-        case "11": return 2; break;
-        case "12": return 3; break;
-        case "1:": return 4; break;
-        case "2:": return 5; break;
-        case "3:": return 6; break;
-        case "4:": return 7; break;
-        case "6:": return 8; break;
-    }
-}
 function getTimesArray(tbody) {
     var times = [];
     var timeSlots = [];
@@ -111,18 +99,6 @@ function getDayOfLecture(number) {
         case 3: return "الثلاثاء";
         case 4: return "الأربعاء";
         case 5: return "الخميس";
-    }
-}
-function getTimeOfLecture(number) {
-    switch (number) {
-        case 1: return "10:00-10:50";
-        case 2: return "11:00-11:50";
-        case 3: return "12:30-01:20";
-        case 4: return "01:30-02:20";
-        case 5: return "02:30-03:20";
-        case 6: return "03:50-04:40";
-        case 7: return "04:50-05:40";
-        case 8: return "06:00-06:50";
     }
 }
 function getIndexOfDeletedSection(id) {
