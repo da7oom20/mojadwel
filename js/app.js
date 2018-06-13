@@ -478,6 +478,11 @@ $("#sections-table").on("click", ".add", function () {
             $("#added-sections-table tr:nth-child(2)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
             $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
 
+            // Show added sections table when first section is added
+            if (table.array.length === 1) {
+                $("#added-sections-table").toggleClass("d-none");
+            }
+
             swal("تم إضافة الشعبة إلى الجدول بنجاح!", {
                 buttons: false,
                 timer: 1000,
@@ -552,6 +557,11 @@ $("#added-sections-table").on("click", ".remove-button", function () {
             colors[i].isUsed = false;
             break;
         }
+    }
+
+    // Hide added sections table when empty
+    if (table.array.length === 0) {
+        $("#added-sections-table").toggleClass("d-none");
     }
 
     swal("تم إزالة الشعبة بنجاح!", {
