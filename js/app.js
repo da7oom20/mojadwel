@@ -49,6 +49,7 @@ function getNumberOfDay(charachterOfDay) {
 function getTimesArray(tbody) {
     var times = [];
     var timeSlots = [];
+    var location = "";
     var allTRs = $(tbody).find('tr');
     var allTDs;
     for(var i = 1; i < allTRs.length; i++){
@@ -56,6 +57,9 @@ function getTimesArray(tbody) {
         if ($(allTDs[0]).text() === "اختبار"){
             continue;
         }
+        // Location
+        location = isMale? $(allTDs[3]).text().substring(20) : $(allTDs[3]).text().substring(28);
+        // Time
         var days = $(allTDs[2]).text();
         var fromTo = $(allTDs[1]).text();
         var startHour = fromTo.charAt(1) === ":" ? Number(fromTo.substring(0, 1)) : Number(fromTo.substring(0, 2));
@@ -76,7 +80,8 @@ function getTimesArray(tbody) {
         for (var j = 0; j < days.length; j++) {
             times.push({
                 day: getNumberOfDay(days.charAt(j)),
-                times: timeSlots.slice(0)
+                times: timeSlots.slice(0),
+                location: location
             });
         }
         timeSlots.length = 0;
@@ -419,7 +424,7 @@ $("#sections-table").on("click", ".add", function () {
             t.time.forEach(function (t2) {
                 sections.array[rowID].time.forEach(function (t3) {
                     if (t3.day === t2.day) {
-                        // loop through times array to detect confliction.
+                        // loop through times array to detect conflict.
                         loop1:
                         for (var i = 0; i < t2.times.length; i++) {
                             for (var j = 0; j < t3.times.length; j++) {
@@ -457,7 +462,7 @@ $("#sections-table").on("click", ".add", function () {
                             '<span class="float-right">' + lastElementInTableArray.dep + ' ' + lastElementInTableArray.number + ' - ' + lastElementInTableArray.section + '</span>' +
                             '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[0].substring(0, 2) + ':' + lastElementInTableArray.time[i].times[0].substring(2, 4) + '</span><br>' +
                             '<span>' + (lastElementInTableArray.name.length > 15 ? lastElementInTableArray.name.substring(0, 15) + "..." : lastElementInTableArray.name) + '</span><br>' +
-                            '<span class="float-right">' + '3193' + '</span>' +
+                            '<span class="float-right">' + lastElementInTableArray.time[i].location + '</span>' +
                             '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2) + ':' + minutesPlus5(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
                         );
                         selectedCell.css('background-color', "");
