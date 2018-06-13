@@ -276,7 +276,7 @@ $("#getSections").click(function () {
     loader.toggleClass("d-none");
 
 
-    $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://iussb.imamu.edu.sa/PROD_ar/bwckctlg.p_disp_listcrse?term_in=143920&subj_in='
+    $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://iussb.imamu.edu.sa/PROD_ar/bwckctlg.p_disp_listcrse?term_in=143930&subj_in='
         + $("select[name='course-dep'] option:selected").text().substring(0,3) + '&crse_in='
         + $("select[name='course-no'] option:selected").text().substring(0,3)
         + '&schd_in=01') + '&callback=?', function(data){
