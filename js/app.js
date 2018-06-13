@@ -338,8 +338,20 @@ $("#getSections").click(function () {
                         crn: sectionDeatils[1],
                         time:getTimesArray(allDetails[i])
                     });
+                    // Color rows
                     if (sectionID % 2 === 0) {
                         $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
+                    }
+                    // If section is already in timetable disable its add section button
+                    var crn = sectionDeatils[1];
+                    for (var j = 0; j < table.array.length; j++) {
+                        if (table.array[j].crn === crn) {
+                            var addSectionButton = $("#" + sectionID + " button");
+                            addSectionButton.attr('disabled', 'true');
+                            addSectionButton.toggleClass("btn-secondary");
+                            addSectionButton.css('cursor', 'not-allowed');
+                            break;
+                        }
                     }
                     sectionID++;
                 }
@@ -372,8 +384,20 @@ $("#getSections").click(function () {
                         crn: sectionDeatils[1],
                         time:getTimesArray(allDetails[i])
                     });
+                    // Color rows
                     if (sectionID % 2 === 0) {
                         $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
+                    }
+                    // If section is already in timetable disable its add section button
+                    var crn = sectionDeatils[1];
+                    for (var j = 0; j < table.array.length; j++) {
+                        if (table.array[j].crn === crn) {
+                            var addSectionButton = $("#" + sectionID + " button");
+                            addSectionButton.attr('disabled', 'true');
+                            addSectionButton.toggleClass("btn-secondary");
+                            addSectionButton.css('cursor', 'not-allowed');
+                            break;
+                        }
                     }
                     sectionID++;
                 }
@@ -412,20 +436,6 @@ $("#sections-table").on("click", ".add", function () {
     var rowID = $(this).parent().parent().attr("id");
     var crn = sections.array[rowID].crn;
 
-    // If section is already added to table
-    var isAlreadyAddedToTable = false;
-    table.array.forEach(function (t) {
-        if (t.crn === crn) {
-            isAlreadyAddedToTable = true;
-        }
-    });
-
-    if (isAlreadyAddedToTable) {
-        swal("الشعبة موجودة في الجدول حالياً", {
-            button: "حسناً",
-            icon: "info"
-        });
-    } else {
         // If section conflicts with another section
         var conflictMessage = "يوجد تعارض مع الشعب التالية : \n";
         var conflictExists = false;
@@ -469,10 +479,10 @@ $("#sections-table").on("click", ".add", function () {
                     } else {
                         selectedCell.html(
                             '<span class="float-right">' + lastElementInTableArray.dep + ' ' + lastElementInTableArray.number + ' - ' + lastElementInTableArray.section + '</span>' +
-                            '<span class="float-left">' + lastElementInTableArray.time[i].times[0].substring(0, 2) + ':' + lastElementInTableArray.time[i].times[0].substring(2, 4) + '</span><br>' +
+                            '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[0].substring(0, 2) + ':' + lastElementInTableArray.time[i].times[0].substring(2, 4) + '</span><br>' +
                             '<span>' + (lastElementInTableArray.name.length > 15 ? lastElementInTableArray.name.substring(0, 15) + "..." : lastElementInTableArray.name) + '</span><br>' +
                             '<span class="float-right">' + '3193' + '</span>' +
-                            '<span class="float-left">' + lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2) + ':' + minutesPlus5(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
+                            '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2) + ':' + minutesPlus5(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
                         );
                         selectedCell.css('background-color', "");
                         selectedCell.attr('style', 'background-color: ' + lastElementInTableArray.color);
@@ -493,7 +503,6 @@ $("#sections-table").on("click", ".add", function () {
                 icon: "success"
             });
         }
-    }
 });
 
 // Remove section from table
@@ -545,6 +554,15 @@ $("#added-sections-table").on("click", ".remove-button", function () {
     details.each(function () {
         $(this).remove();
     });
+    // Clear add section button if exists in sections table.
+    for (var i = 0; i < sections.array.length; i++) {
+        if (sections.array[i].crn === table.array[index].crn) {
+            var addSectionButton = $("#" + i + " button");
+            addSectionButton.removeAttr('disabled');
+            addSectionButton.toggleClass("btn-secondary");
+            addSectionButton.css('cursor', 'pointer');
+        }
+    }
     // Delete section from table array
     table.array.splice(index, 1);
     // Clear color from color object
