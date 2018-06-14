@@ -37,6 +37,13 @@ function getTextTime(tbody) {
     }
     return textTime;
 }
+function getTeacherName(tbody) {
+    var teacherName = "";
+    var allTRs = $(tbody).find('tr');
+    var allTDs = $(allTRs[1]).find('td');
+    teacherName = $(allTDs[6]).text();
+    return teacherName;
+}
 function getNumberOfDay(charachterOfDay) {
     switch (charachterOfDay) {
         case 'U': return 1; break;
@@ -291,18 +298,21 @@ $("#getSections").click(function () {
         //If not found any section alert that
         var foundSections = false;
         var sectionID = 0;
+        var teacher;
         /**Male Student**/
         if (isMale) {
             for (var i = 0; i < allTitles.length; i++) {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
                 if (Math.floor(sectionDeatils[3]/10) === 17) {
                     foundSections = true;
+                    teacher = getTeacherName(allDetails[i]);
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
                         "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
                         "<td>" + sectionDeatils[2].substring(4, 7) + "</td>" +
                         "<td>" + sectionDeatils[0] + "</td>" +
                         "<td>" + sectionDeatils[3] + "</td>" +
+                        "<td>" + teacher + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
                         "<td dir='ltr'>" + getTextTime(allDetails[i]) + "</td>" +
                         "<td>" +
@@ -317,7 +327,8 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails[i])
+                        time:getTimesArray(allDetails[i]),
+                        teacher: teacher
                     });
                     // Color rows
                     if (sectionID % 2 === 0) {
@@ -343,12 +354,14 @@ $("#getSections").click(function () {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
                 if (Math.floor(sectionDeatils[3]/10) === 37 || sectionDeatils[3] === 071) {
                     foundSections = true;
+                    teacher = getTeacherName(allDetails[i]);
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
                         "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
                         "<td>" + sectionDeatils[2].substring(4, 7) + "</td>" +
                         "<td>" + sectionDeatils[0] + "</td>" +
                         "<td>" + sectionDeatils[3] + "</td>" +
+                        "<td>" + teacher + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
                         "<td dir='ltr'>" + getTextTime(allDetails[i]) + "</td>" +
                         "<td>" +
@@ -363,7 +376,8 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails[i])
+                        time:getTimesArray(allDetails[i]),
+                        teacher: teacher
                     });
                     // Color rows
                     if (sectionID % 2 === 0) {
