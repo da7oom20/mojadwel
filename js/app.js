@@ -41,7 +41,7 @@ function getTeacherName(tbody) {
     var teacherName = "";
     var allTRs = $(tbody).find('tr');
     var allTDs = $(allTRs[1]).find('td');
-    teacherName = $(allTDs[6]).text();
+    teacherName = $(allTDs[6]).text().replace("(P)", "");
     return teacherName;
 }
 function getNumberOfDay(charachterOfDay) {
