@@ -303,7 +303,7 @@ $("#getSections").click(function () {
         if (isMale) {
             for (var i = 0; i < allTitles.length; i++) {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (Math.floor(sectionDeatils[3]/10) === 17) {
+                if (Math.floor(sectionDeatils[3]/10) === 17 || sectionDeatils[3] === "061") {
                     foundSections = true;
                     teacher = getTeacherName(allDetails[i]);
                     $("table#sections-table tbody").append(
