@@ -46,11 +46,11 @@ function getTeacherName(tbody) {
 }
 function getNumberOfDay(charachterOfDay) {
     switch (charachterOfDay) {
-        case 'U': return 1; break;
-        case 'M': return 2; break;
-        case 'T': return 3; break;
-        case 'W': return 4; break;
-        case 'R': return 5; break;
+        case 'U': return 1;
+        case 'M': return 2;
+        case 'T': return 3;
+        case 'W': return 4;
+        case 'R': return 5;
     }
 }
 function getTimesArray(tbody) {
@@ -147,7 +147,7 @@ $.cssHooks.backgroundColor = {
             return "#" + hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
         }
     }
-}
+};
 
 /**==== Objects ====**/
 //object to get sections and save them to sections array and add them to table array
