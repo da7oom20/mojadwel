@@ -224,6 +224,12 @@ $("select[name='gender']").change(function () {
     $("select[name='course-dep']").removeAttr("disabled");
     // Enable course number choice
     $("select[name='course-no']").removeAttr("disabled");
+    // Remove unusable time rows when gender is chosen
+    if (isMale) {
+        $("#timetable tbody tr").slice(0, 30).remove();
+    } else {
+        $("#timetable tbody tr").slice(114).remove();
+    }
 });
 
 // Change course numbers when department is changed
