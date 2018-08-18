@@ -549,11 +549,11 @@ $("#added-sections-table").on("click", ".remove-button", function () {
                 // console.log(days, "#row" + t.times[i] + " td");
                 var foundBigger = false;
                 for (var j = 0; j < days.length; j++) {
-                   if (Number($(days[j]).attr("class").substring(3)) > t.day) {
-                       $('<td class="day' + t.day + '"></td>').insertBefore( $(days[j]));
-                       foundBigger = true;
-                       break;
-                   }
+                    if (Number($(days[j]).attr("class").substring(3)) > t.day) {
+                        $('<td class="day' + t.day + '"></td>').insertBefore( $(days[j]));
+                        foundBigger = true;
+                        break;
+                    }
                 }
                 // When tr is empty or there is no bigger number
                 if (!foundBigger) {
