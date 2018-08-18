@@ -262,6 +262,9 @@ $("select[name='course-dep']").change(function () {
 
 // Get sections button = Will get the page and send it to sections object to process it
 $("#getSections").click(function () {
+    // This variable stores chosen dep to deal with section number patterns problems (17x - 37x - ...)
+    var chosenCourseDep = $("select[name='course-dep'] option:selected")[0].value;
+
     // If didn't choose gender and dep and course warn the user
     if (isMale === undefined || $("select[name='course-dep']").val() === null || $("select[name='course-no']").val() === null) {
         swal("يجب عليك اختيار (طالب/طالبة) و (رمز المقرر) و (رقم المقرر) قبل عرض الشعب المتاحة", {
@@ -358,7 +361,12 @@ $("#getSections").click(function () {
         } else {
             for (var i = 0; i < allTitles.length; i++) {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (Math.floor(sectionDeatils[3]/10) === 37 || sectionDeatils[3] === 071) {
+                if (Math.floor(sectionDeatils[3]/10) === 37 
+                    ||
+                    sectionDeatils[3] === 071
+                    ||
+                    (chosenCourseDep == "it" && Math.floor(sectionDeatils[3]/10) === 27)
+                    ) {
                     foundSections = true;
                     teacher = getTeacherName(allDetails[i]);
                     $("table#sections-table tbody").append(
