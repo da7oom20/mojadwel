@@ -238,7 +238,7 @@ $("select[name='course-dep']").change(function () {
         case "cs": showCourseNumbers(csCourses); break;
         case "is": showCourseNumbers(isCourses); break;
         case "it": showCourseNumbers(itCourses); break;
-        case "ms": showCourseNumbers(msCourses); break;
+        case "infoStudies": showCourseNumbers(infoStudiesCourses); break;
 
         case "math": showCourseNumbers(mathCourses); break;
         case "stat": showCourseNumbers(statCourses); break;

@@ -256,7 +256,7 @@ var itCourses = [
     }
 ];
 
-var msCourses = [
+var infoStudiesCourses = [
     {
         number: 101,
         name: "مقدمة في دراسات المعلومات"
