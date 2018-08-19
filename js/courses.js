@@ -258,6 +258,18 @@ var itCourses = [
 
 var msCourses = [
     {
+        number: 101,
+        name: "مقدمة في دراسات المعلومات"
+    },
+    {
+        number: 111,
+        name: "مصادر المعلومات"
+    },
+    {
+        number: 151,
+        name: "مقدمة في تنظيم المعلومات"
+    },
+    {
         number: 201,
         name: "توصيف البيانات"
     },
