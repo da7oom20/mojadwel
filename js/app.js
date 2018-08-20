@@ -120,14 +120,19 @@ function getIndexOfDeletedSection(id) {
     }
     return -1;
 }
-function minutesPlus5(time) {
-    time = Number(time);
-    time += 5;
-    time = String(time);
-    if (time.length === 1) {
-        return "0" + time;
+function getEndOfLectureTimeForTimetable(hours, minutes) {
+    minutes = Number(minutes);
+    minutes += 5;
+    minutes = String(minutes);
+    if (minutes.length === 1) {
+        return hours + ":" + "0" + minutes;
+    } else if (minutes === "60"){
+        var hoursPlusOne = String(Number(hours) + 1);
+        if (hoursPlusOne === "13")
+            hoursPlusOne = "1";
+        return (hoursPlusOne.length === 2? hoursPlusOne : "0" + hoursPlusOne) + ":" + "00";
     } else {
-        return time;
+        return hours + ":" + minutes;
     }
 }
 $.cssHooks.backgroundColor = {
@@ -492,7 +497,7 @@ $("#sections-table").on("click", ".add", function () {
                             '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[0].substring(0, 2) + ':' + lastElementInTableArray.time[i].times[0].substring(2, 4) + '</span><br>' +
                             '<span>' + (lastElementInTableArray.name.length > 15 ? lastElementInTableArray.name.substring(0, 15) + "..." : lastElementInTableArray.name) + '</span><br>' +
                             '<span class="float-right">' + lastElementInTableArray.time[i].location + '</span>' +
-                            '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2) + ':' + minutesPlus5(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
+                            '<span class="float-left d-none d-md-block">' + getEndOfLectureTimeForTimetable(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2), lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
                         );
                         selectedCell.css('background-color', "");
                         selectedCell.attr('style', 'background-color: ' + lastElementInTableArray.color);
