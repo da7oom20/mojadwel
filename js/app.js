@@ -318,7 +318,10 @@ $("#getSections").click(function () {
         if (isMale) {
             for (var i = 0; i < allTitles.length; i++) {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (Math.floor(sectionDeatils[3]/10) === 17) {
+                if (Math.floor(sectionDeatils[3]/10) === 17
+                    ||
+                    (chosenCourseDep == "cs" && (sectionDeatils[3] === "071" || sectionDeatils[3] === "072"))
+                ) {
                     foundSections = true;
                     teacher = getTeacherName(allDetails[i]);
                     $("table#sections-table tbody").append(
@@ -372,6 +375,10 @@ $("#getSections").click(function () {
                     sectionDeatils[3] === 071
                     ||
                     ((chosenCourseDep == "it" || chosenCourseDep == "nho") && Math.floor(sectionDeatils[3]/10) === 27)
+                    ||
+                    (chosenCourseDep == "cs" && sectionDeatils[3] === "071")
+                    ||
+                    ((chosenCourseDep == "cs" || chosenCourseDep == "phys") && Math.floor(sectionDeatils[3]/10) === 27)
                     ) {
                     foundSections = true;
                     teacher = getTeacherName(allDetails[i]);
