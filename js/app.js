@@ -371,7 +371,7 @@ $("#getSections").click(function () {
                     ||
                     sectionDeatils[3] === 071
                     ||
-                    (chosenCourseDep == "it" && Math.floor(sectionDeatils[3]/10) === 27)
+                    ((chosenCourseDep == "it" || chosenCourseDep == "nho") && Math.floor(sectionDeatils[3]/10) === 27)
                     ) {
                     foundSections = true;
                     teacher = getTeacherName(allDetails[i]);
