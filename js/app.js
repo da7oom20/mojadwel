@@ -308,7 +308,7 @@ $("#getSections").click(function () {
         //allTitles will be an array of "th" objects which is like تراكيب محددة - 20332 - عال 104 - 173
         var allTitles = page.find('th.ddtitle');
         //allDeatis will be an array of "tr" objects of each row of datadisplaytable tables
-        var allDetails = page.find('table.datadisplaytable tbody');
+        var allDetails;
         var sectionDeatils;
         //If not found any section alert that
         var foundSections = false;
@@ -323,7 +323,8 @@ $("#getSections").click(function () {
                     (chosenCourseDep == "cs" && (sectionDeatils[3] === "071" || sectionDeatils[3] === "072"))
                 ) {
                     foundSections = true;
-                    teacher = getTeacherName(allDetails[i]);
+                    allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
+                    teacher = getTeacherName(allDetails);
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
                         "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
@@ -332,11 +333,11 @@ $("#getSections").click(function () {
                         "<td>" + sectionDeatils[3] + "</td>" +
                         "<td>" + teacher + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
-                        "<td dir='ltr'>" + getTextTime(allDetails[i]) + "</td>" +
+                        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
                         "<td>" +
                         "<button type=\"button\" class=\"add\">+</button>" +
-                        "</td>"
-                        +"</tr>"
+                        "</td>" +
+                        "</tr>"
                     );
                     sections.array.push({
                         id: sectionID,
@@ -345,7 +346,7 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails[i]),
+                        time:getTimesArray(allDetails),
                         teacher: teacher
                     });
                     // Color rows
@@ -381,7 +382,8 @@ $("#getSections").click(function () {
                     ((chosenCourseDep == "cs" || chosenCourseDep == "phys") && Math.floor(sectionDeatils[3]/10) === 27)
                     ) {
                     foundSections = true;
-                    teacher = getTeacherName(allDetails[i]);
+                    allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
+                    teacher = getTeacherName(allDetails);
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
                         "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
@@ -390,7 +392,7 @@ $("#getSections").click(function () {
                         "<td>" + sectionDeatils[3] + "</td>" +
                         "<td>" + teacher + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
-                        "<td dir='ltr'>" + getTextTime(allDetails[i]) + "</td>" +
+                        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
                         "<td>" +
                         "<button type=\"button\" class=\"add\">+</button>" +
                         "</td>"
@@ -403,7 +405,7 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails[i]),
+                        time:getTimesArray(allDetails),
                         teacher: teacher
                     });
                     // Color rows
