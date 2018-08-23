@@ -280,6 +280,15 @@ $("#getSections").click(function () {
         return;
     }
 
+    if (isMale && chosenCourseDep === "trk") {
+        swal("نواجه مشكلة في مادة السيرة النبوية، من فضلك راجع شعب السيرة النبوية من ملف الشعب.", {
+            button: "حسناً",
+            icon: "info"
+        });
+
+        return;
+    }
+
     var getSectionsButton = $("#getSections");
     var loader = $(".loader");
     var section = $("select[name='course-dep'] option:selected").text() + ' - ' + $("select[name='course-no'] option:selected").text();
