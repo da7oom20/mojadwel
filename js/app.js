@@ -3,6 +3,8 @@
 var id = 1;
 // Used To Know Gender
 var isMale;
+// Used to alert the user if exceeded credit hours limit.
+var totalCredits = 0;
 
 /**==== Functions ====**/
 function showCourseNumbers(arry) {
@@ -134,6 +136,37 @@ function getEndOfLectureTimeForTimetable(hours, minutes) {
     } else {
         return hours + ":" + minutes;
     }
+}
+function getCreditHours(dep, number) {
+    var courseObject;
+    switch (dep) {
+        case "cs": courseObject = csCourses; break;
+        case "is": courseObject = isCourses; break;
+        case "it": courseObject = itCourses; break;
+        case "infoStudies": courseObject = infoStudiesCourses; break;
+        case "infoMgmt": courseObject = infoMgmtCourses; break;
+
+        case "math": courseObject = mathCourses; break;
+        case "stat": courseObject = statCourses; break;
+        case "phys": courseObject = physCourses; break;
+
+        case "acco": courseObject = accoCourses; break;
+        case "econ": courseObject = econCourses; break;
+        case "mgmt": courseObject = mgmtCourses; break;
+
+        case "eng": courseObject = engCourses; break;
+
+        case "qur": courseObject = qurCourses; break;
+        case "aqd": courseObject = aqdCourses; break;
+        case "fqh": courseObject = fqhCourses; break;
+        case "nho": courseObject = nhoCourses; break;
+        case "elm": courseObject = elmCourses; break;
+        case "trk": courseObject = trkCourses; break;
+        case "thqf": courseObject = thqfCourses; break;
+    }
+
+    var creditHours = courseObject.find(o => o.number === number).creditHours;
+    return creditHours;
 }
 $.cssHooks.backgroundColor = {
     get: function(elem) {
@@ -270,6 +303,8 @@ $("select[name='course-dep']").change(function () {
 $("#getSections").click(function () {
     // This variable stores chosen dep to deal with section number patterns problems (17x - 37x - ...)
     var chosenCourseDep = $("select[name='course-dep'] option:selected")[0].value;
+    // This variable used to get credit hours for a course.
+    var chosenCourseNumber = Number($("select[name='course-no'] option:selected").text().substring(0,3));
 
     // If didn't choose gender and dep and course warn the user
     if (isMale === undefined || $("select[name='course-dep']").val() === null || $("select[name='course-no']").val() === null) {
@@ -280,6 +315,7 @@ $("#getSections").click(function () {
         return;
     }
 
+    // Discard trk sections due to strange section number patterns.
     if (isMale && chosenCourseDep === "trk") {
         swal("نواجه مشكلة في مادة السيرة النبوية، من فضلك راجع شعب السيرة النبوية من ملف الشعب.", {
             button: "حسناً",
@@ -334,11 +370,23 @@ $("#getSections").click(function () {
                     foundSections = true;
                     allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
                     teacher = getTeacherName(allDetails);
+                    sections.array.push({
+                        id: sectionID,
+                        dep: sectionDeatils[2].substring(0, 3),
+                        number: sectionDeatils[2].substring(4, 7),
+                        name: sectionDeatils[0],
+                        section: sectionDeatils[3],
+                        crn: sectionDeatils[1],
+                        time:getTimesArray(allDetails),
+                        teacher: teacher,
+                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber)
+                    });
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
-                        "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
-                        "<td>" + sectionDeatils[2].substring(4, 7) + "</td>" +
-                        "<td>" + sectionDeatils[0] + "</td>" +
+                        "<td>"+ sectionDeatils[2].substring(0, 3) + " - " +
+                        sectionDeatils[2].substring(4, 7) + " - " +
+                        sectionDeatils[0] + "</td>" +
+                        "<td>" + sections.array[sections.array.length - 1].creditHours + "</td>" +
                         "<td>" + sectionDeatils[3] + "</td>" +
                         "<td>" + teacher + "</td>" +
                         "<td class='crn'>" + sectionDeatils[1] + "</td>" +
@@ -348,16 +396,6 @@ $("#getSections").click(function () {
                         "</td>" +
                         "</tr>"
                     );
-                    sections.array.push({
-                        id: sectionID,
-                        dep: sectionDeatils[2].substring(0, 3),
-                        number: sectionDeatils[2].substring(4, 7),
-                        name: sectionDeatils[0],
-                        section: sectionDeatils[3],
-                        crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails),
-                        teacher: teacher
-                    });
                     // Color rows
                     if (sectionID % 2 === 0) {
                         $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
@@ -393,20 +431,6 @@ $("#getSections").click(function () {
                     foundSections = true;
                     allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
                     teacher = getTeacherName(allDetails);
-                    $("table#sections-table tbody").append(
-                        "<tr id=\"" + sectionID + "\">" +
-                        "<td>"+ sectionDeatils[2].substring(0, 3) +"</td>" +
-                        "<td>" + sectionDeatils[2].substring(4, 7) + "</td>" +
-                        "<td>" + sectionDeatils[0] + "</td>" +
-                        "<td>" + sectionDeatils[3] + "</td>" +
-                        "<td>" + teacher + "</td>" +
-                        "<td class='crn'>" + sectionDeatils[1] + "</td>" +
-                        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
-                        "<td>" +
-                        "<button type=\"button\" class=\"add\">+</button>" +
-                        "</td>"
-                        +"</tr>"
-                    );
                     sections.array.push({
                         id: sectionID,
                         dep: sectionDeatils[2].substring(0, 3),
@@ -415,8 +439,24 @@ $("#getSections").click(function () {
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
                         time:getTimesArray(allDetails),
-                        teacher: teacher
+                        teacher: teacher,
+                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber)
                     });
+                    $("table#sections-table tbody").append(
+                        "<tr id=\"" + sectionID + "\">" +
+                        "<td>"+ sectionDeatils[2].substring(0, 3) + " - " +
+                        sectionDeatils[2].substring(4, 7) + " - " +
+                        sectionDeatils[0] + "</td>" +
+                        "<td>" + sections.array[sections.array.length - 1].creditHours + "</td>" +
+                        "<td>" + sectionDeatils[3] + "</td>" +
+                        "<td>" + teacher + "</td>" +
+                        "<td class='crn'>" + sectionDeatils[1] + "</td>" +
+                        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
+                        "<td>" +
+                        "<button type=\"button\" class=\"add\">+</button>" +
+                        "</td>" +
+                        "</tr>"
+                    );
                     // Color rows
                     if (sectionID % 2 === 0) {
                         $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
@@ -502,6 +542,10 @@ $("#sections-table").on("click", ".add", function () {
             table.array[table.array.length - 1].color = getColor();
             table.array[table.array.length - 1].id = id++;
 
+            // Update total credit hours
+            totalCredits += table.array[table.array.length - 1].creditHours;
+            $("#total-credits").html(totalCredits);
+        
             var lastElementInTableArray = table.array[table.array.length - 1];
             var selectedCell;
             for (var i = 0; i < lastElementInTableArray.time.length; i++) {
@@ -526,13 +570,15 @@ $("#sections-table").on("click", ".add", function () {
                 }
             }
 
-            $("#added-sections-table tr:nth-child(1)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.dep + " " + lastElementInTableArray.number + "-" + lastElementInTableArray.section + '</td>');
-            $("#added-sections-table tr:nth-child(2)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
-            $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
+            $("#added-sections-table tr:nth-child(1)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.dep + "-" + lastElementInTableArray.number + "-" + lastElementInTableArray.section + '</td>');
+            $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
+            $("#added-sections-table tr:nth-child(2)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.creditHours + '</td>');
+            $("#added-sections-table tr:nth-child(4)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
 
             // Show added sections table when first section is added
             if (table.array.length === 1) {
                 $("#added-sections-table").toggleClass("d-none");
+                $("#total-credits-table").toggleClass("d-none");
             }
 
             swal("تم إضافة الشعبة إلى الجدول بنجاح!", {
@@ -540,6 +586,14 @@ $("#sections-table").on("click", ".add", function () {
                 timer: 1000,
                 icon: "success"
             });
+            if (totalCredits > 19) {
+                setTimeout(() => {
+                    swal("تنبيه!", "لقد تجاوزت الحد المسموح به في عدد الوحدات(١٩ وحدة)", {
+                        buttons: "حسناً",
+                        icon: "error"
+                    });
+                }, 1000);
+            }
         }
 });
 
@@ -601,6 +655,9 @@ $("#added-sections-table").on("click", ".remove-button", function () {
             addSectionButton.css('cursor', 'pointer');
         }
     }
+    // Update total credit hours
+    totalCredits -= table.array[index].creditHours;
+    $("#total-credits").html(totalCredits);
     // Delete section from table array
     table.array.splice(index, 1);
     // Clear color from color object
@@ -614,6 +671,7 @@ $("#added-sections-table").on("click", ".remove-button", function () {
     // Hide added sections table when empty
     if (table.array.length === 0) {
         $("#added-sections-table").toggleClass("d-none");
+        $("#total-credits-table").toggleClass("d-none");
     }
 
     swal("تم إزالة الشعبة بنجاح!", {

@@ -257,9 +257,8 @@
 			<table class="table-bordered" id="sections-table">
 				<thead>
 					<tr>
-						<th>رمز المقرر</th>
-						<th>رقم المقرر</th>
-						<th>اسم المقرر</th>
+						<th>المقرر</th>
+						<th>الوحدات</th>
 						<th>الشعبة</th>
 						<th>الأستاذ</th>
 						<th>الرقم المرجعي</th>
@@ -276,7 +275,10 @@
 			</table>
 			<table class="table-bordered d-none" id="added-sections-table">
 				<tr>
-					<th rowspan="3" style="width: 5%">الشعب المضافة</th>
+					<th rowspan="4" style="width: 5%">الشعب المضافة</th>
+
+				</tr>
+				<tr>
 
 				</tr>
 				<tr>
@@ -286,10 +288,15 @@
 
 				</tr>
 			</table>
+			<table class="table-bordered d-none" id="total-credits-table">
+				<tr>
+					<th style="width: 5%">إجمالي الوحدات</th>
+					<td id="total-credits"></td>
+				</tr>
+			</table>
 			<hr>
 		</div>
 	</div>
-
 
 	<!-- Table -->
 	<div class="row">
@@ -1412,11 +1419,11 @@
 			<p>مجدول v1.0.2 - اقترح أو أبلغ عن مشكلة: <a href="http://twitter.com/zayedd_" target="_blank">@zayedd_</a></p>
 		</div>
 	</footer>
-	
-	<script src="js/courses.js"></script>
-	<script src="js/app.js"></script>
 
 </div>
+
+<script src="js/courses.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
