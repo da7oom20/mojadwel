@@ -168,6 +168,37 @@ function getCreditHours(dep, number) {
     var creditHours = courseObject.find(o => o.number === number).creditHours;
     return creditHours;
 }
+function getFinalExam(tbody) {
+    var allTRs = $(tbody).find('tr');
+    var allTDs;
+    var time = "";
+    var date = "لا يوجد";
+    for(var i = 1; i < allTRs.length; i++){
+        allTDs = $(allTRs[i]).find('td');
+        if ($(allTDs[0]).text() === "اختبار"){
+            time = $(allTDs[1]).text();
+            date = $(allTDs[4]).text();
+        }
+    }
+    return {time: time, date: date};
+}
+function checkForFinalExamConflicts(lastAddedElement) {
+    if (lastAddedElement.finalExam.date === "لا يوجد") {
+        return;
+    }
+
+    table.array.forEach(function(params) {
+        if (params.finalExam.date === lastAddedElement.finalExam.date && lastAddedElement.crn !== params.crn) {
+            setTimeout(() => {
+                swal("لديك اختباران نهائيان في نفس اليوم!", params.dep + "-" + params.number + "-" + params.name + "\n" +
+                                                            lastAddedElement.dep + "-" + lastAddedElement.number + "-" + lastAddedElement.name, {
+                    buttons: "حسناً",
+                    icon: "error"
+                });
+            }, 1000);
+        }
+    });
+}
 $.cssHooks.backgroundColor = {
     get: function(elem) {
         if (elem.currentStyle)
@@ -379,7 +410,8 @@ $("#getSections").click(function () {
                         crn: sectionDeatils[1],
                         time:getTimesArray(allDetails),
                         teacher: teacher,
-                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber)
+                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
+                        finalExam: getFinalExam(allDetails)
                     });
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
@@ -440,7 +472,8 @@ $("#getSections").click(function () {
                         crn: sectionDeatils[1],
                         time:getTimesArray(allDetails),
                         teacher: teacher,
-                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber)
+                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
+                        finalExam: getFinalExam(allDetails)
                     });
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
@@ -571,9 +604,10 @@ $("#sections-table").on("click", ".add", function () {
             }
 
             $("#added-sections-table tr:nth-child(1)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.dep + "-" + lastElementInTableArray.number + "-" + lastElementInTableArray.section + '</td>');
-            $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
+            $("#added-sections-table tr:nth-child(4)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
             $("#added-sections-table tr:nth-child(2)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.creditHours + '</td>');
-            $("#added-sections-table tr:nth-child(4)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
+            $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '" dir="ltr">' + lastElementInTableArray.finalExam.date.substring(0, 10) + "<br>" + lastElementInTableArray.finalExam.time + '</td>');
+            $("#added-sections-table tr:nth-child(5)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
 
             // Show added sections table when first section is added
             if (table.array.length === 1) {
@@ -586,6 +620,8 @@ $("#sections-table").on("click", ".add", function () {
                 timer: 1000,
                 icon: "success"
             });
+
+            // Alert the user if exceeded 19 credits
             if (totalCredits > 19) {
                 setTimeout(() => {
                     swal("تنبيه!", "لقد تجاوزت الحد المسموح به في عدد الوحدات(١٩ وحدة)", {
@@ -594,6 +630,9 @@ $("#sections-table").on("click", ".add", function () {
                     });
                 }, 1000);
             }
+
+            // Check for final exams confilcts
+            checkForFinalExamConflicts(table.array[table.array.length - 1]);
         }
 });
 
