@@ -396,7 +396,7 @@ $("#getSections").click(function () {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
                 if (Math.floor(sectionDeatils[3]/10) === 17
                     ||
-                    (chosenCourseDep == "cs" && (sectionDeatils[3] === "071" || sectionDeatils[3] === "072"))
+                    (chosenCourseDep == "cs" && chosenCourseNumber === 140 && (sectionDeatils[3] === "071" || sectionDeatils[3] === "072"))
                 ) {
                     foundSections = true;
                     allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
@@ -452,11 +452,9 @@ $("#getSections").click(function () {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
                 if (Math.floor(sectionDeatils[3]/10) === 37 
                     ||
-                    sectionDeatils[3] === 071
-                    ||
                     ((chosenCourseDep == "it" || chosenCourseDep == "nho") && Math.floor(sectionDeatils[3]/10) === 27)
                     ||
-                    (chosenCourseDep == "cs" && sectionDeatils[3] === "071")
+                    (chosenCourseDep == "cs" && chosenCourseNumber === 242 && sectionDeatils[3] === "071")
                     ||
                     ((chosenCourseDep == "cs" || chosenCourseDep == "phys") && Math.floor(sectionDeatils[3]/10) === 27)
                     ) {
