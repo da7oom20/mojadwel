@@ -735,7 +735,7 @@ $("#export-as-image").click(function() {
             window.open(uri);
         }
     }
-    html2canvas(document.querySelector('#timetable')).then(function(canvas) {
+    html2canvas(document.querySelector('#timetable tbody')).then(function(canvas) {
         saveAs(canvas.toDataURL(), 'جدول.png');
     });
 });
