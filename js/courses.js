@@ -42,6 +42,11 @@ var csCourses = [
     },
     {
         creditHours: 4,
+        number: 225,
+        name: "أساسيات أنظمة الحاسبات"
+    },
+    {
+        creditHours: 4,
         number: 242,
         name: "تراكيب البيانات"
     },
