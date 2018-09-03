@@ -189,13 +189,24 @@ function checkForFinalExamConflicts(lastAddedElement) {
 
     table.array.forEach(function(params) {
         if (params.finalExam.date === lastAddedElement.finalExam.date && lastAddedElement.crn !== params.crn) {
-            setTimeout(() => {
-                swal("لديك اختباران نهائيان في نفس اليوم!", params.dep + "-" + params.number + "-" + params.name + "\n" +
-                                                            lastAddedElement.dep + "-" + lastAddedElement.number + "-" + lastAddedElement.name, {
-                    buttons: "حسناً",
-                    icon: "error"
-                });
-            }, 1000);
+            if (params.finalExam.time === lastAddedElement.finalExam.time) {
+                setTimeout(() => {
+                    swal("لديك تعارض في وقت الاختبار النهائي!", "هناك مادتان لهما نفس يوم ووقت الاختبار النهائي:\n" +
+                                                                params.dep + "-" + params.number + "-" + params.name + "\n" +
+                                                                lastAddedElement.dep + "-" + lastAddedElement.number + "-" + lastAddedElement.name, {
+                        buttons: "حسناً",
+                        icon: "error"
+                    });
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    swal("لديك اختباران نهائيان في نفس اليوم!", params.dep + "-" + params.number + "-" + params.name + "\n" +
+                                                                lastAddedElement.dep + "-" + lastAddedElement.number + "-" + lastAddedElement.name, {
+                        buttons: "حسناً",
+                        icon: "error"
+                    });
+                }, 1000);
+            }
         }
     });
 }
@@ -539,7 +550,7 @@ $("#getSections").click(function () {
 $("#sections-table").on("click", ".add", function () {
     var rowID = $(this).parent().parent().attr("id");
     var crn = sections.array[rowID].crn;
-
+    
         // If section conflicts with another section
         var conflictMessage = "يوجد تعارض مع الشعب التالية : \n";
         var conflictExists = false;
