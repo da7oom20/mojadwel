@@ -405,7 +405,8 @@ $("#getSections").click(function () {
         if (isMale) {
             for (var i = 0; i < allTitles.length; i++) {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (Math.floor(sectionDeatils[3]/10) === 17
+                if (
+                    Math.floor(sectionDeatils[3]/10) === 17
                     ||
                     (chosenCourseDep == "cs" && chosenCourseNumber === 141 && sectionDeatils[3] === "071")
                 ) {
