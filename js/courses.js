@@ -263,6 +263,11 @@ var itCourses = [
     },
     {
         creditHours: 3,
+        number: 322,
+        name: "تخزين البيانات"
+    },
+    {
+        creditHours: 3,
         number: 331,
         name: "أساسيات العمارة ذات الطبقات المتعددة"
     },
