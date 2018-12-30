@@ -303,6 +303,11 @@ var itCourses = [
     },
     {
         creditHours: 3,
+        number: 413,
+        name: "نظم المشاريع"
+    },
+    {
+        creditHours: 3,
         number: 420,
         name: "أخلاقيات الحاسب"
     },

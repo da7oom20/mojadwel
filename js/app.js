@@ -385,7 +385,7 @@ $("#getSections").click(function () {
     loader.toggleClass("d-none");
 
 
-    $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://iussb.imamu.edu.sa/PROD_ar/bwckctlg.p_disp_listcrse?term_in=144010&subj_in='
+    $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://iussb.imamu.edu.sa/PROD_ar/bwckctlg.p_disp_listcrse?term_in=144020&subj_in='
         + $("select[name='course-dep'] option:selected").text().substring(0,3) + '&crse_in='
         + $("select[name='course-no'] option:selected").text().substring(0,3)
         + '&schd_in=01') + '&callback=?', function(data){
@@ -407,7 +407,7 @@ $("#getSections").click(function () {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
                 if (Math.floor(sectionDeatils[3]/10) === 17
                     ||
-                    (chosenCourseDep == "cs" && chosenCourseNumber === 140 && (sectionDeatils[3] === "071" || sectionDeatils[3] === "072"))
+                    (chosenCourseDep == "cs" && chosenCourseNumber === 141 && sectionDeatils[3] === "071")
                 ) {
                     foundSections = true;
                     allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
@@ -461,13 +461,13 @@ $("#getSections").click(function () {
         } else {
             for (var i = 0; i < allTitles.length; i++) {
                 sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (Math.floor(sectionDeatils[3]/10) === 37 
+                if (
+                    Math.floor(sectionDeatils[3]/10) === 37
                     ||
-                    ((chosenCourseDep == "it" || chosenCourseDep == "nho") && Math.floor(sectionDeatils[3]/10) === 27)
-                    ||
-                    (chosenCourseDep == "cs" && chosenCourseNumber === 242 && sectionDeatils[3] === "071")
-                    ||
-                    ((chosenCourseDep == "cs" || chosenCourseDep == "phys") && Math.floor(sectionDeatils[3]/10) === 27)
+                    (
+                        (chosenCourseDep == "it" || chosenCourseDep == "nho" || chosenCourseDep == "mgmt" || chosenCourseDep == "phys" || chosenCourseDep == "eng" || chosenCourseDep == "cs")
+                        && Math.floor(sectionDeatils[3]/10) === 27
+                    )
                     ) {
                     foundSections = true;
                     allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
