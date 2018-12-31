@@ -730,7 +730,7 @@ $("#added-sections-table").on("click", ".remove-button", function () {
     });
 });
 
-// Export timetable as image
+// Export timetable as an image
 $("#export-as-image").click(function() {
     function saveAs(uri, filename) {
         var link = document.createElement('a');
