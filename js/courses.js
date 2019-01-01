@@ -782,3 +782,11 @@ var thqfCourses = [
     name: "الثقافة الإسلامية"
     }
 ];
+
+var adbCourses = [
+    {
+        creditHours: 2,
+        number: 102,
+        name: "التحرير العربي"
+    }
+];

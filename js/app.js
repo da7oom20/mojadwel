@@ -179,6 +179,7 @@ function getCreditHours(dep, number) {
         case "elm": courseObject = elmCourses; break;
         case "trk": courseObject = trkCourses; break;
         case "thqf": courseObject = thqfCourses; break;
+        case "adb": courseObject = adbCourses; break;
     }
 
     var creditHours = courseObject.find(o => o.number === number).creditHours;
@@ -354,6 +355,7 @@ $("select[name='course-dep']").change(function () {
         case "elm": showCourseNumbers(elmCourses); break;
         case "trk": showCourseNumbers(trkCourses); break;
         case "thqf": showCourseNumbers(thqfCourses); break;
+        case "adb": showCourseNumbers(adbCourses); break;
     }
 });
 
