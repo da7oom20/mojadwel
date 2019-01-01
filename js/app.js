@@ -20,6 +20,14 @@ function getTextTime(tbody) {
     var days, time;
     for(var i = 1; i < allTRs.length; i++){
         allTDs = $(allTRs[i]).find('td');
+        // Return an empty times array when no time is provided
+        if (
+            $(allTDs[1]).text() === "TBA" || $(allTDs[1]).text() === "" || $(allTDs[1]).text() === " " ||
+            $(allTDs[2]).text() === "TBA" || $(allTDs[2]).text() === "" || $(allTDs[2]).text() === " "
+        ) {
+            return "لا يوجد محاضرة";
+        }
+        // Exclude Exam Rows
         if ($(allTDs[0]).text() === "اختبار"){
             continue;
         }
@@ -63,6 +71,14 @@ function getTimesArray(tbody) {
     var allTDs;
     for(var i = 1; i < allTRs.length; i++){
         allTDs = $(allTRs[i]).find('td');
+        // Return an empty times array when no time is provided
+        if (
+            $(allTDs[1]).text() === "TBA" || $(allTDs[1]).text() === "" || $(allTDs[1]).text() === " " ||
+            $(allTDs[2]).text() === "TBA" || $(allTDs[2]).text() === "" || $(allTDs[2]).text() === " "
+        ) {
+            return [];
+        }
+        // Exclude Exam Rows
         if ($(allTDs[0]).text() === "اختبار"){
             continue;
         }
@@ -421,7 +437,7 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails),
+                        time: getTimesArray(allDetails),
                         teacher: teacher,
                         creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
                         finalExam: getFinalExam(allDetails)
@@ -482,7 +498,7 @@ $("#getSections").click(function () {
                         name: sectionDeatils[0],
                         section: sectionDeatils[3],
                         crn: sectionDeatils[1],
-                        time:getTimesArray(allDetails),
+                        time: getTimesArray(allDetails),
                         teacher: teacher,
                         creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
                         finalExam: getFinalExam(allDetails)
