@@ -150,6 +150,11 @@ var isCourses = [
     },
     {
         creditHours: 3,
+        number: 229,
+        name: "مقدمة في قواعد البيانات"
+    },
+    {
+        creditHours: 3,
         number: 203,
         name: "برمجة الويب"
     },
