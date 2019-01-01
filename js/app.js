@@ -401,6 +401,7 @@ $("#getSections").click(function () {
         var foundSections = false;
         var sectionID = 0;
         var teacher;
+        var lastAddedSection;
         /**Male Student**/
         if (isMale) {
             for (var i = 0; i < allTitles.length; i++) {
@@ -425,15 +426,16 @@ $("#getSections").click(function () {
                         creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
                         finalExam: getFinalExam(allDetails)
                     });
+                    lastAddedSection = sections.array[sections.array.length - 1];
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
-                        "<td>"+ sectionDeatils[2].substring(0, 3) + " - " +
-                        sectionDeatils[2].substring(4, 7) + " - " +
-                        sectionDeatils[0] + "</td>" +
-                        "<td>" + sections.array[sections.array.length - 1].creditHours + "</td>" +
-                        "<td>" + sectionDeatils[3] + "</td>" +
+                        "<td>"+ lastAddedSection.dep + " - " +
+                        lastAddedSection.number + " - " +
+                        lastAddedSection.name + "</td>" +
+                        "<td>" + lastAddedSection.creditHours + "</td>" +
+                        "<td>" + lastAddedSection.section + "</td>" +
                         "<td>" + teacher + "</td>" +
-                        "<td class='crn'>" + sectionDeatils[1] + "</td>" +
+                        "<td class='crn'>" + lastAddedSection.crn + "</td>" +
                         "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
                         "<td>" +
                         "<button type=\"button\" class=\"add\">+</button>" +
@@ -485,15 +487,16 @@ $("#getSections").click(function () {
                         creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
                         finalExam: getFinalExam(allDetails)
                     });
+                    lastAddedSection = sections.array[sections.array.length - 1];
                     $("table#sections-table tbody").append(
                         "<tr id=\"" + sectionID + "\">" +
-                        "<td>"+ sectionDeatils[2].substring(0, 3) + " - " +
-                        sectionDeatils[2].substring(4, 7) + " - " +
-                        sectionDeatils[0] + "</td>" +
-                        "<td>" + sections.array[sections.array.length - 1].creditHours + "</td>" +
-                        "<td>" + sectionDeatils[3] + "</td>" +
+                        "<td>"+ lastAddedSection.dep + " - " +
+                        lastAddedSection.number + " - " +
+                        lastAddedSection.name + "</td>" +
+                        "<td>" + lastAddedSection.creditHours + "</td>" +
+                        "<td>" + lastAddedSection.section + "</td>" +
                         "<td>" + teacher + "</td>" +
-                        "<td class='crn'>" + sectionDeatils[1] + "</td>" +
+                        "<td class='crn'>" + lastAddedSection.crn + "</td>" +
                         "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
                         "<td>" +
                         "<button type=\"button\" class=\"add\">+</button>" +
