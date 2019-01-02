@@ -1,4 +1,7 @@
-/**==== Global Variables ====**/
+/**==========================================**/
+//              Global Variables              //
+/**==========================================**/
+
 // Used with every section in Table array to manage add and remove
 var id = 1;
 // Used To Know Gender
@@ -6,7 +9,9 @@ var isMale;
 // Used to alert the user if exceeded credit hours limit.
 var totalCredits = 0;
 
-/**==== Functions ====**/
+/**==========================================**/
+//                 Functions                  //
+/**==========================================**/
 function showCourseNumbers(arry) {
     $("option[value='courseNumber']").remove();
     arry.forEach(function(element){
@@ -246,7 +251,9 @@ $.cssHooks.backgroundColor = {
     }
 };
 
-/**==== Objects ====**/
+/**==========================================**/
+//                  Objects                   //
+/**==========================================**/
 //object to get sections and save them to sections array and add them to table array
 var sections = {
     array: [],
@@ -310,7 +317,9 @@ var colors = [
     }
 ];
 
-/**==== Event listeners ====**/
+/**==========================================**/
+//              Event Listeners               //
+/**==========================================**/
 // Get gender and disable changing gender
 $("select[name='gender']").change(function () {
     // Assign Gender
