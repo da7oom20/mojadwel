@@ -232,6 +232,88 @@ function checkForFinalExamConflicts(lastAddedElement) {
         }
     });
 }
+function addFoundedSectionToSections(allTitles, sectionDeatils, sectionID, chosenCourseDep, chosenCourseNumber) {
+    //allDeatis will be an array of "tr" objects of each row of datadisplaytable tables
+    var allDetails = $(allTitles).parent().next().find("tbody")[0];
+    var teacher = getTeacherName(allDetails);
+    sections.array.push({
+        id: sectionID,
+        dep: sectionDeatils[2].substring(0, 3),
+        number: sectionDeatils[2].substring(4, 7),
+        name: sectionDeatils[0],
+        section: sectionDeatils[3],
+        crn: sectionDeatils[1],
+        time: getTimesArray(allDetails),
+        teacher: teacher,
+        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
+        finalExam: getFinalExam(allDetails)
+    });
+    var lastAddedSection = sections.array[sections.array.length - 1];
+    $("table#sections-table tbody").append(
+        "<tr id=\"" + sectionID + "\">" +
+        "<td>"+ lastAddedSection.dep + " - " +
+        lastAddedSection.number + " - " +
+        lastAddedSection.name + "</td>" +
+        "<td>" + lastAddedSection.creditHours + "</td>" +
+        "<td>" + lastAddedSection.section + "</td>" +
+        "<td>" + teacher + "</td>" +
+        "<td class='crn'>" + lastAddedSection.crn + "</td>" +
+        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
+        "<td>" +
+        "<button type=\"button\" class=\"add\">+</button>" +
+        "</td>" +
+        "</tr>"
+    );
+    // Color rows
+    if (sectionID % 2 === 0) {
+        $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
+    }
+    // If section is already in timetable disable its add section button
+    var crn = sectionDeatils[1];
+    for (var j = 0; j < table.array.length; j++) {
+        if (table.array[j].crn === crn) {
+            var addSectionButton = $("#" + sectionID + " button");
+            addSectionButton.attr('disabled', 'true');
+            addSectionButton.toggleClass("btn-secondary");
+            addSectionButton.css('cursor', 'not-allowed');
+            break;
+        }
+    }
+}
+function findSections(allTitles, chosenCourseDep, chosenCourseNumber) {
+    var sectionDeatils;
+    var sectionID = 0;
+    if (isMale) {
+        for (var i = 0; i < allTitles.length; i++) {
+            sectionDeatils = $(allTitles[i]).text().split(" - ");
+            if (
+                Math.floor(sectionDeatils[3]/10) === 17
+                ||
+                (chosenCourseDep == "cs" && chosenCourseNumber === 141 && sectionDeatils[3] === "071")
+            ) {
+                addFoundedSectionToSections(allTitles[i], sectionDeatils, sectionID, chosenCourseDep, chosenCourseNumber);
+                sectionID++;
+            }
+        }
+        /**Female Student**/
+    } else {
+        for (var i = 0; i < allTitles.length; i++) {
+            sectionDeatils = $(allTitles[i]).text().split(" - ");
+            if (
+                Math.floor(sectionDeatils[3]/10) === 37
+                ||
+                (
+                    (chosenCourseDep == "it" || chosenCourseDep == "nho" || chosenCourseDep == "mgmt" || chosenCourseDep == "phys" || chosenCourseDep == "eng" || chosenCourseDep == "cs")
+                    && Math.floor(sectionDeatils[3]/10) === 27
+                )
+            ) {
+                addFoundedSectionToSections(allTitles[i], sectionDeatils, sectionID, chosenCourseDep, chosenCourseNumber);
+                sectionID++;
+            }
+        }
+    }
+
+}
 $.cssHooks.backgroundColor = {
     get: function(elem) {
         if (elem.currentStyle)
@@ -421,136 +503,10 @@ $("#getSections").click(function () {
         var page = $($.parseHTML(data.contents.substring(3463, data.contents.length - 1764)));
         //allTitles will be an array of "th" objects which is like تراكيب محددة - 20332 - عال 104 - 173
         var allTitles = page.find('th.ddtitle');
-        //allDeatis will be an array of "tr" objects of each row of datadisplaytable tables
-        var allDetails;
-        var sectionDeatils;
-        //If not found any section alert that
-        var foundSections = false;
-        var sectionID = 0;
-        var teacher;
-        var lastAddedSection;
-        /**Male Student**/
-        if (isMale) {
-            for (var i = 0; i < allTitles.length; i++) {
-                sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (
-                    Math.floor(sectionDeatils[3]/10) === 17
-                    ||
-                    (chosenCourseDep == "cs" && chosenCourseNumber === 141 && sectionDeatils[3] === "071")
-                ) {
-                    foundSections = true;
-                    allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
-                    teacher = getTeacherName(allDetails);
-                    sections.array.push({
-                        id: sectionID,
-                        dep: sectionDeatils[2].substring(0, 3),
-                        number: sectionDeatils[2].substring(4, 7),
-                        name: sectionDeatils[0],
-                        section: sectionDeatils[3],
-                        crn: sectionDeatils[1],
-                        time: getTimesArray(allDetails),
-                        teacher: teacher,
-                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
-                        finalExam: getFinalExam(allDetails)
-                    });
-                    lastAddedSection = sections.array[sections.array.length - 1];
-                    $("table#sections-table tbody").append(
-                        "<tr id=\"" + sectionID + "\">" +
-                        "<td>"+ lastAddedSection.dep + " - " +
-                        lastAddedSection.number + " - " +
-                        lastAddedSection.name + "</td>" +
-                        "<td>" + lastAddedSection.creditHours + "</td>" +
-                        "<td>" + lastAddedSection.section + "</td>" +
-                        "<td>" + teacher + "</td>" +
-                        "<td class='crn'>" + lastAddedSection.crn + "</td>" +
-                        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
-                        "<td>" +
-                        "<button type=\"button\" class=\"add\">+</button>" +
-                        "</td>" +
-                        "</tr>"
-                    );
-                    // Color rows
-                    if (sectionID % 2 === 0) {
-                        $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
-                    }
-                    // If section is already in timetable disable its add section button
-                    var crn = sectionDeatils[1];
-                    for (var j = 0; j < table.array.length; j++) {
-                        if (table.array[j].crn === crn) {
-                            var addSectionButton = $("#" + sectionID + " button");
-                            addSectionButton.attr('disabled', 'true');
-                            addSectionButton.toggleClass("btn-secondary");
-                            addSectionButton.css('cursor', 'not-allowed');
-                            break;
-                        }
-                    }
-                    sectionID++;
-                }
-            }
-        /**Female Student**/
-        } else {
-            for (var i = 0; i < allTitles.length; i++) {
-                sectionDeatils = $(allTitles[i]).text().split(" - ");
-                if (
-                    Math.floor(sectionDeatils[3]/10) === 37
-                    ||
-                    (
-                        (chosenCourseDep == "it" || chosenCourseDep == "nho" || chosenCourseDep == "mgmt" || chosenCourseDep == "phys" || chosenCourseDep == "eng" || chosenCourseDep == "cs")
-                        && Math.floor(sectionDeatils[3]/10) === 27
-                    )
-                    ) {
-                    foundSections = true;
-                    allDetails = $(allTitles[i]).parent().next().find("tbody")[0];
-                    teacher = getTeacherName(allDetails);
-                    sections.array.push({
-                        id: sectionID,
-                        dep: sectionDeatils[2].substring(0, 3),
-                        number: sectionDeatils[2].substring(4, 7),
-                        name: sectionDeatils[0],
-                        section: sectionDeatils[3],
-                        crn: sectionDeatils[1],
-                        time: getTimesArray(allDetails),
-                        teacher: teacher,
-                        creditHours: getCreditHours(chosenCourseDep, chosenCourseNumber),
-                        finalExam: getFinalExam(allDetails)
-                    });
-                    lastAddedSection = sections.array[sections.array.length - 1];
-                    $("table#sections-table tbody").append(
-                        "<tr id=\"" + sectionID + "\">" +
-                        "<td>"+ lastAddedSection.dep + " - " +
-                        lastAddedSection.number + " - " +
-                        lastAddedSection.name + "</td>" +
-                        "<td>" + lastAddedSection.creditHours + "</td>" +
-                        "<td>" + lastAddedSection.section + "</td>" +
-                        "<td>" + teacher + "</td>" +
-                        "<td class='crn'>" + lastAddedSection.crn + "</td>" +
-                        "<td dir='ltr'>" + getTextTime(allDetails) + "</td>" +
-                        "<td>" +
-                        "<button type=\"button\" class=\"add\">+</button>" +
-                        "</td>" +
-                        "</tr>"
-                    );
-                    // Color rows
-                    if (sectionID % 2 === 0) {
-                        $("table#sections-table tbody tr").last().css("background-color", "aliceblue");
-                    }
-                    // If section is already in timetable disable its add section button
-                    var crn = sectionDeatils[1];
-                    for (var j = 0; j < table.array.length; j++) {
-                        if (table.array[j].crn === crn) {
-                            var addSectionButton = $("#" + sectionID + " button");
-                            addSectionButton.attr('disabled', 'true');
-                            addSectionButton.toggleClass("btn-secondary");
-                            addSectionButton.css('cursor', 'not-allowed');
-                            break;
-                        }
-                    }
-                    sectionID++;
-                }
-            }
-        }
-        // If didn't find any Section
-        if (foundSections === false) {
+        // Search for Sections
+        findSections(allTitles, chosenCourseDep, chosenCourseNumber);
+        // If didn't find any Section alert the user
+        if (sections.array.length === 0) {
             swal("لا يوجد شعب متاحة لمادة:", section, "error", {button: "حسناً"});
         }
 
