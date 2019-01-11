@@ -345,8 +345,9 @@ function addSectionToTimetable(addSectionButton, rowID) {
         addSectionButton.toggleClass("btn-secondary");
         addSectionButton.css('cursor', 'not-allowed');
         table.array.push(sections.array[rowID]);
-        table.array[table.array.length - 1].color = getColor();
         table.array[table.array.length - 1].id = id++;
+        DB.addToDB(table.array[table.array.length - 1]);
+        table.array[table.array.length - 1].color = getColor();
 
         // Update total credit hours
         totalCredits += table.array[table.array.length - 1].creditHours;
@@ -406,6 +407,60 @@ function addSectionToTimetable(addSectionButton, rowID) {
 
         // Check for final exams confilcts
         checkForFinalExamConflicts(table.array[table.array.length - 1]);
+    }
+}
+function initTimeTable(sectionsArr) {
+    if (sectionsArr.length > 0) {
+        sectionsArr.forEach(function (t) {
+            table.array.push(t);
+            table.array[table.array.length - 1].color = getColor();
+
+            // Update total credit hours
+            totalCredits += table.array[table.array.length - 1].creditHours;
+            $("#total-credits").html(totalCredits);
+
+            var lastElementInTableArray = table.array[table.array.length - 1];
+            var selectedCell;
+            for (var i = 0; i < lastElementInTableArray.time.length; i++) {
+                for (var j = 0; j < lastElementInTableArray.time[i].times.length; j++) {
+                    selectedCell = $('#timetable tbody tr#row' + lastElementInTableArray.time[i].times[j] + ' td.day' + lastElementInTableArray.time[i].day);
+                    if (j !== 0) {
+                        selectedCell.remove();
+                    } else {
+                        selectedCell.html(
+                            '<span class="float-right">' + lastElementInTableArray.dep + ' ' + lastElementInTableArray.number + ' - ' + lastElementInTableArray.section + '</span>' +
+                            '<span class="float-left d-none d-md-block">' + lastElementInTableArray.time[i].times[0].substring(0, 2) + ':' + lastElementInTableArray.time[i].times[0].substring(2, 4) + '</span><br>' +
+                            '<span>' + (lastElementInTableArray.name.length > 15 ? lastElementInTableArray.name.substring(0, 15) + "..." : lastElementInTableArray.name) + '</span><br>' +
+                            '<span class="float-right">' + lastElementInTableArray.time[i].location + '</span>' +
+                            '<span class="float-left d-none d-md-block">' + getEndOfLectureTimeForTimetable(lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(0, 2), lastElementInTableArray.time[i].times[lastElementInTableArray.time[i].times.length - 1].substring(2, 4)) + '</span>'
+                        );
+                        selectedCell.css('background-color', "");
+                        selectedCell.attr('style', 'background-color: ' + lastElementInTableArray.color);
+                        selectedCell.attr('rowspan', lastElementInTableArray.time[i].times.length);
+                        selectedCell.addClass("cell-" + lastElementInTableArray.id + "-table");
+                        selectedCell.addClass("filled-cell");
+                    }
+                }
+            }
+
+            $("#added-sections-table tr:nth-child(1)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.dep + "-" + lastElementInTableArray.number + "-" + lastElementInTableArray.section + '</td>');
+            $("#added-sections-table tr:nth-child(4)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.crn + '</td>');
+            $("#added-sections-table tr:nth-child(2)").append('<td class="cell-' + lastElementInTableArray.id + '">' + lastElementInTableArray.creditHours + '</td>');
+            $("#added-sections-table tr:nth-child(3)").append('<td class="cell-' + lastElementInTableArray.id + '" dir="ltr">' + lastElementInTableArray.finalExam.date.substring(0, 10) + "<br>" + lastElementInTableArray.finalExam.time + '</td>');
+            $("#added-sections-table tr:nth-child(5)").append('<td class="cell-' + lastElementInTableArray.id + '"><button type="button" class="remove-button">-</button></td>');
+
+            // Show added sections table when first section is added
+            if (table.array.length === 1) {
+                $("#added-sections-table").toggleClass("d-none");
+                $("#total-credits-table").toggleClass("d-none");
+            }
+        });
+        swal("تم استعادة الشعب إلى الجدول!", {
+            buttons: false,
+            timer: 1000,
+            icon: "success"
+        });
+
     }
 }
 $.cssHooks.backgroundColor = {
@@ -492,7 +547,76 @@ var colors = [
         isUsed: false
     }
 ];
+//  indexedDB stuff
+var DB = (function () {
+    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
+    if (!window.indexedDB) {
+        console.log("indexedDB is not supported on this browser.");
+        return;
+    }
+
+    var request = window.indexedDB.open("MojadwelDB", 1),
+        db,
+        tx,
+        store;
+
+    request.onupgradeneeded = function (e) {
+        var db = request.result,
+            sectionsStore = db.createObjectStore("SectionsStore", {keyPath: "crn"});
+
+        sectionsStore.createIndex("crn", "crn", {unique: true});
+        sectionsStore.createIndex("id", "id", {unique: true});
+        sectionsStore.createIndex("creditHours", "creditHours");
+        sectionsStore.createIndex("dep", "dep");
+        sectionsStore.createIndex("finalExam", "finalExam");
+        sectionsStore.createIndex("name", "name");
+        sectionsStore.createIndex("number", "number");
+        sectionsStore.createIndex("section", "section");
+        sectionsStore.createIndex("teacher", "teacher");
+        sectionsStore.createIndex("time", "time");
+    };
+
+    request.onerror = function (e) {
+        console.log("Error: ", e.target.errorCode);
+    };
+
+    request.onsuccess = function (e) {
+        db = request.result;
+        tx = db.transaction("SectionsStore", "readwrite");
+        store = tx.objectStore("SectionsStore");
+
+        var q = store.getAll();
+        q.onsuccess = function() {
+            // update id if exists some data in db
+            q.result.forEach(function (t) {
+                if (t.id >= id)
+                    id = t.id + 1;
+            });
+            initTimeTable(q.result);
+        };
+
+        db.onerror = function (e) {
+            console.log("Error: ", e.target.errorCode);
+        }
+    };
+
+    return {
+        addToDB: function (obj) {
+            db = request.result;
+            tx = db.transaction("SectionsStore", "readwrite");
+            store = tx.objectStore("SectionsStore");
+            store.put(obj);
+        },
+        removeFromDB: function (crn) {
+            db = request.result;
+            tx = db.transaction("SectionsStore", "readwrite");
+            store = tx.objectStore("SectionsStore");
+            store.delete(crn);
+        }
+    };
+
+}());
 /**==========================================**/
 //              Event Listeners               //
 /**==========================================**/
@@ -694,6 +818,8 @@ $("#added-sections-table").on("click", ".remove-button", function () {
     // Update total credit hours
     totalCredits -= table.array[index].creditHours;
     $("#total-credits").html(totalCredits);
+    // Remove deleted section from DB
+    DB.removeFromDB(table.array[index].crn);
     // Delete section from table array
     table.array.splice(index, 1);
     // Clear color from color object
