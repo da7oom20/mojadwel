@@ -785,7 +785,7 @@ $("#addSections").click(function () {
         '<p>  رمز المقرر </p> '+
         '<select id="course-dep"  ><option value="null" disabled selected hidden>اختر</option><optgroup label="كلية الحاسب"><option value="cs">عال (علوم حاسب)</option><option value="is">نال (نظم معلومات)</option><option value="it">تال (تقنية معلومات)</option><option value="infoStudies">دال (دراسات المعلومات)</option><option value="infoMgmt">دام (إدارة المعلومات)</option></optgroup><optgroup label="كلية العلوم"><option value="math">ريض (رياضيات)</option><option value="stat">احص (إحصاء)</option><option value="phys">فيز (فيزياء)</option></optgroup><optgroup label="كلية الإدراة"><option value="acco">حسب (محاسبة)</option><option value="econ">قصد (اقتصاد)</option><option value="mgmt">دار (إدارة أعمال)</option></optgroup><optgroup label="كلية اللغات"><option value="eng">نجل (إنجليزي)</option></optgroup><optgroup label="كليات أخرى"><option value="qur">قرا (قرآن)</option><option value="aqd">عقد (توحيد)</option><option value="fqh">فقه</option><option value="nho">نحو</option><option value="elm">علم (مهارات اتصال)</option><option value="trk">ترخ (سيرة نبوية)</option><option value="thqf">ثقف (ثقافة إسلامية)</option><option value="adb">ادب</option></optgroup></select>' +
         '<br> <br>'+
-        '<p> رقم المقرر </p> '+
+        '<p> رقم المقرر </p> '+ // i will try getElememtById
         '<select id="course-no"  ><option value="null" disabled selected hidden>اختر</option></select>' +
         '<br> <br>'+
         '<p> الأيــام </p> '+
